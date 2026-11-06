@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #eff0fc;
+  --foreground: #22234b;
+}
+
+body {
+  color: var(--foreground);
+  background: linear-gradient(180deg, #e9ebfa 0%, #f4f5fd 50%, #eff0fc 100%);
+  min-height: 100vh;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom utility to hide scrollbars while preserving scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Magical card glassmorphism effect */
+.alea-card {
+  background: #ffffff;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(224, 227, 250, 0.85);
+  box-shadow: 0 10px 28px -6px rgba(50, 52, 120, 0.05), 0 2px 8px -2px rgba(50, 52, 120, 0.03);
+}
+
+/* Book spine effect */
+.book-spine-shadow {
+  box-shadow: -4px 0 8px -2px rgba(28, 26, 68, 0.22), 
+              0 8px 22px -4px rgba(28, 26, 68, 0.16),
+              0 2px 6px -1px rgba(28, 26, 68, 0.08);
+}
