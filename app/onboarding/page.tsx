@@ -3,17 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useOnboardingStore } from "@/store/useOnboardingStore";
+import { BrilloAvatar } from "@/components/BrilloAvatar";
 import {
   ArrowLeft,
   Check,
   Sparkles,
-  BookOpen,
   ArrowRight,
   Shield,
-  Heart,
-  Star,
-  Search,
-  CheckCircle2,
 } from "lucide-react";
 
 export default function OnboardingPage() {
@@ -29,6 +25,8 @@ export default function OnboardingPage() {
     prevStep,
     nickname,
     setNickname,
+    mascotName,
+    setMascotName,
     age,
     setAge,
     worlds,
@@ -41,14 +39,11 @@ export default function OnboardingPage() {
     setRhythm,
     formats,
     toggleFormat,
-    readingHabit,
-    setReadingHabit,
     saveToStorage,
   } = useOnboardingStore();
 
   useEffect(() => {
     setMounted(true);
-    // Asignar Daniela por defecto si está vacío para reflejar el prototipo fielmente
     if (!nickname) {
       setNickname("Daniela");
     }
@@ -62,11 +57,14 @@ export default function OnboardingPage() {
     );
   }
 
-  // PANTALLA 3 (Mundos de inicio)
-  const defaultWorlds = [
-    { id: "Aventuras y fantasía", title: "Aventuras y fantasía", image: "/assets/worlds/aventuras_fantasia.jpg" },
-    { id: "Naturaleza y animales", title: "Naturaleza y animales", image: "/assets/worlds/naturaleza_animales.jpg" },
-    { id: "Planetas y galaxias", title: "Planetas y galaxias", image: "/assets/worlds/planetas_galaxias.jpg" },
+  // PANTALLA 3: Mundos oficiales (Máximo 3)
+  const officialWorlds = [
+    { id: "Bosques encantados", title: "Bosques encantados", icon: "🌲", desc: "Naturaleza mística y seres ocultos" },
+    { id: "Castillos y secretos", title: "Castillos y secretos", icon: "🏰", desc: "Pasajes secretos y misterios antiguos" },
+    { id: "Mundos submarinos", title: "Mundos submarinos", icon: "🌊", desc: "Profundidades y criaturas oceánicas" },
+    { id: "Planetas y galaxias", title: "Planetas y galaxias", icon: "🚀", desc: "Estrellas, naves y el cosmos" },
+    { id: "Islas y aventuras", title: "Islas y aventuras", icon: "🏝️", desc: "Tesoros, mapas y expediciones" },
+    { id: "Lugares como el nuestro", title: "Lugares como el nuestro", icon: "🏙️", desc: "Historias reales, coles y barrios" },
   ];
 
   // PANTALLA 4: ¿Qué te gustaría encontrar en una historia? (Máx 3)
@@ -96,25 +94,22 @@ export default function OnboardingPage() {
       title: "¡Que pasen cosas!",
       desc: "Acción, ritmo y sorpresas.",
       icon: "⚡",
-      badgeColor: "from-amber-400 to-rose-400",
     },
     {
       id: "Que me atrapen poco a poco.",
       title: "Que me atrapen poco a poco.",
       desc: "Personajes, emociones y mundos que explorar.",
       icon: "📖",
-      badgeColor: "from-indigo-400 to-teal-400",
     },
     {
       id: "Depende de la historia.",
       title: "Depende de la historia.",
       desc: "Me gustan las dos.",
       icon: "🧭",
-      badgeColor: "from-blue-400 to-purple-400",
     },
   ];
 
-  // PANTALLA 7: ¿Qué tipo de libros te llaman más la atención? (Máx 3, con excepción quirúrgica)
+  // PANTALLA 7: ¿Qué tipo de libros te llaman más la atención? (Máx 3, con exclusión quirúrgica)
   const formatOptions = [
     { id: "Libros con muchas ilustraciones", label: "Libros con muchas ilustraciones", icon: "🌳" },
     { id: "Cómics y novelas gráficas", label: "Cómics y novelas gráficas", icon: "🎨" },
@@ -147,7 +142,8 @@ export default function OnboardingPage() {
     router.push("/descubre");
   };
 
-  const totalSteps = 8;
+  const totalSteps = 9;
+  const currentMascotName = mascotName || "Brillo";
 
   return (
     <div className="flex-1 flex flex-col justify-between p-4 sm:p-6 min-h-screen bg-gradient-to-b from-[#E7E9FB] via-[#F4F4FD] to-[#EAE9F8] relative overflow-hidden select-none">
@@ -155,7 +151,7 @@ export default function OnboardingPage() {
       {/* Enchanted background glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-200/40 rounded-full blur-3xl pointer-events-none" />
 
-      {/* TOP HEADER: Back button, step progress dots (Matching mockups) */}
+      {/* TOP HEADER: Back button, step progress dots */}
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-3">
           {currentStep > 1 ? (
@@ -170,14 +166,13 @@ export default function OnboardingPage() {
             <div className="w-10" />
           )}
 
-          {/* Step indicator: e.g. "4 de 6" */}
+          {/* Step indicator */}
           <div className="flex flex-col items-center">
             <span className="text-xs font-bold text-[#30337E] tracking-tight mb-1.5">
-              {currentStep <= 2 ? `Inicio ${currentStep}` : `${currentStep - 2} de 6`}
+              Paso {currentStep} de {totalSteps}
             </span>
-            {/* Dots bar matching mockups */}
             <div className="flex items-center gap-1.5">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map((s) => (
+              {Array.from({ length: totalSteps }, (_, i) => i + 1).map((s) => (
                 <div
                   key={s}
                   className={`h-2 rounded-full transition-all duration-300 ${
@@ -195,13 +190,13 @@ export default function OnboardingPage() {
           <button
             onClick={() => {
               if (worlds.length === 0) {
-                toggleWorld("Aventuras y fantasía");
-                toggleWorld("Naturaleza y animales");
+                toggleWorld("Bosques encantados");
+                toggleWorld("Castillos y secretos");
                 toggleWorld("Planetas y galaxias");
               }
               if (formats.length === 0) toggleFormat("Me da igual el formato si la historia es buena");
               if (!rhythm) setRhythm("¡Que pasen cosas!");
-              setStep(8);
+              setStep(9);
             }}
             className="text-xs font-bold text-slate-400 hover:text-[#4F46E5] px-2 py-1"
           >
@@ -213,92 +208,160 @@ export default function OnboardingPage() {
       {/* WIZARD CONTENT CONTAINER */}
       <div className="flex-1 flex flex-col justify-center py-2 relative z-10">
 
-        {/* PASO 1: Nombre / Apodo Lector */}
+        {/* PASO 1: Presentación de la Mascota y su nombre (HITO 2, Bug #3 y #11) */}
         {currentStep === 1 && (
           <div className="space-y-5 text-center">
-            <div className="w-24 h-24 mx-auto rounded-3xl overflow-hidden shadow-magical ring-4 ring-white/80 bg-white">
-              <img
-                src="/assets/mascot/banner_mascot.jpg"
-                alt="Mascota ALEA"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <BrilloAvatar size="xl" expression="happy" name={currentMascotName} />
 
             <div>
               <h1 className="text-2xl font-black text-[#26245C] tracking-tight">
-                ¡Te damos la bienvenida a ALEA!
+                ¡Hola! Soy tu acompañante de lectura ✨
               </h1>
-              <p className="text-xs text-slate-600 mt-1.5 max-w-xs mx-auto leading-relaxed">
-                Tu rincón mágico para descubrir los mejores libros físicos sin pantallas ni publicidad.
+              <p className="text-xs text-slate-600 mt-2 max-w-sm mx-auto leading-relaxed">
+                Por defecto me llamo <strong className="text-indigo-600">{currentMascotName}</strong>, pero puedes darme el nombre que más te guste:
               </p>
             </div>
 
             <div className="alea-card p-5 max-w-xs mx-auto space-y-3 text-left">
-              <label htmlFor="nickname" className="text-xs font-bold text-[#30337E] uppercase tracking-wider block">
-                ¿Cómo te gustaría que te llamemos?
+              <label htmlFor="mascotName" className="text-xs font-bold text-[#30337E] uppercase tracking-wider block">
+                Nombre de tu acompañante:
               </label>
+              <input
+                id="mascotName"
+                type="text"
+                value={mascotName}
+                onChange={(e) => setMascotName(e.target.value)}
+                placeholder="Brillo"
+                maxLength={20}
+                className="w-full px-4 py-3 bg-[#F4F5FD] border border-indigo-100 rounded-2xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              />
+              <p className="text-[11px] text-slate-500">
+                Escribe &quot;Brillo&quot;, &quot;Chispa&quot;, &quot;Lumi&quot;, o lo que tú quieras.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* PASO 2: Nombre del Lector y Edad */}
+        {currentStep === 2 && (
+          <div className="space-y-4 text-center">
+            <BrilloAvatar size="lg" expression="curious" name={currentMascotName} />
+
+            <div>
+              <h1 className="text-2xl font-black text-[#26245C] tracking-tight">
+                ¿Cómo te gustaría que te llamemos a ti?
+              </h1>
+              <p className="text-xs text-slate-600 mt-1 max-w-xs mx-auto">
+                Para que {currentMascotName} se dirija a ti como en casa.
+              </p>
+            </div>
+
+            <div className="alea-card p-4 max-w-xs mx-auto space-y-3 text-left">
               <input
                 id="nickname"
                 type="text"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                placeholder="Ej. Daniela, Leo..."
+                placeholder="Ej. Daniela, Lucas..."
                 maxLength={20}
-                className="w-full px-4 py-3 bg-[#F4F5FD] border border-indigo-100 rounded-2xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-full px-4 py-2.5 bg-[#F4F5FD] border border-indigo-100 rounded-2xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
-              <p className="text-[11px] text-slate-500 flex items-center gap-1">
-                <Shield size={13} className="text-emerald-600 shrink-0" />
+
+              <div className="pt-1">
+                <span className="text-xs font-bold text-[#30337E] block mb-2">
+                  ¿Cuántos años tienes? ({age} años)
+                </span>
+                <div className="grid grid-cols-5 gap-1.5">
+                  {["7", "8", "9", "10", "11", "12", "13", "14", "15", "16"].map((num) => (
+                    <button
+                      key={num}
+                      type="button"
+                      onClick={() => setAge(num)}
+                      className={`py-2 rounded-xl font-black text-xs transition-all border ${
+                        age === num
+                          ? "bg-[#4F46E5] text-white border-indigo-600 shadow-sm scale-105"
+                          : "bg-white text-slate-700 border-indigo-100 hover:bg-indigo-50/50"
+                      }`}
+                    >
+                      {num}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-[10px] text-slate-500 flex items-center gap-1 pt-1">
+                <Shield size={12} className="text-emerald-600 shrink-0" />
                 100% Privado: no te pedimos correos ni datos personales.
               </p>
             </div>
           </div>
         )}
 
-        {/* PASO 2: Edad del lector */}
-        {currentStep === 2 && (
-          <div className="space-y-5 text-center">
-            <div className="w-24 h-24 mx-auto rounded-3xl overflow-hidden shadow-magical ring-4 ring-white/80 bg-white">
-              <img
-                src="/assets/mascot/mascot_standing.jpg"
-                alt="Mascota ALEA"
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            <div>
-              <h1 className="text-2xl font-black text-[#26245C] tracking-tight">
-                ¿Cuántos años tienes?
+        {/* PASO 3: Tus Mundos (HITO 1, Bug #2) */}
+        {currentStep === 3 && (
+          <div className="space-y-4">
+            <div className="text-center space-y-1">
+              <h1 className="text-xl sm:text-2xl font-black text-[#26245C] tracking-tight">
+                Tus Mundos
               </h1>
-              <p className="text-xs text-slate-600 mt-1 max-w-xs mx-auto">
-                Para calibrar los temas e historias ideales para ti.
+              <p className="text-xs text-slate-500 font-medium">
+                Elige hasta 3 mundos que despierten tu curiosidad ({worlds.length}/3)
               </p>
             </div>
 
-            <div className="grid grid-cols-5 gap-2 max-w-xs mx-auto">
-              {["7", "8", "9", "10", "11", "12", "13", "14", "15", "16"].map((num) => (
-                <button
-                  key={num}
-                  type="button"
-                  onClick={() => setAge(num)}
-                  className={`py-3 rounded-2xl font-black text-sm transition-all border ${
-                    age === num
-                      ? "bg-[#4F46E5] text-white border-indigo-600 shadow-magical scale-105"
-                      : "bg-white text-slate-700 border-indigo-100 hover:border-indigo-300 hover:bg-indigo-50/50"
-                  }`}
-                >
-                  {num}
-                </button>
-              ))}
+            <div className="flex justify-center">
+              <BrilloAvatar size="sm" expression="curious" name={currentMascotName} />
             </div>
 
-            <p className="text-xs font-bold text-[#30337E]">
-              Edad seleccionada: <span className="text-indigo-600">{age} años</span>
-            </p>
+            {/* 6 Official Worlds */}
+            <div className="grid grid-cols-2 gap-2.5 max-h-[46vh] overflow-y-auto no-scrollbar pt-1">
+              {officialWorlds.map((item) => {
+                const isSelected = worlds.includes(item.id);
+                const isMax = worlds.length >= 3 && !isSelected;
+
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    disabled={isMax}
+                    onClick={() => toggleWorld(item.id)}
+                    className={`alea-card p-3 rounded-2xl text-left transition-all relative flex flex-col justify-between min-h-[96px] ${
+                      isSelected
+                        ? "bg-[#ECEEFC] border-indigo-500 shadow-magical ring-1 ring-indigo-400"
+                        : isMax
+                        ? "opacity-40 cursor-not-allowed bg-white/70"
+                        : "bg-white hover:border-indigo-300"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl">{item.icon}</span>
+                      <div
+                        className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all ${
+                          isSelected
+                            ? "bg-[#4F46E5] border-indigo-600 text-white"
+                            : "border-slate-300 bg-white"
+                        }`}
+                      >
+                        {isSelected && <Check size={12} strokeWidth={3} />}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-xs font-bold text-[#202154] block mt-1 leading-snug">
+                        {item.title}
+                      </span>
+                      <span className="text-[10px] text-slate-500 block leading-tight line-clamp-1">
+                        {item.desc}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
-        {/* PASO 3 (Mockup Screen 4): ¿Qué te gustaría encontrar en una historia? (Máx 3) */}
-        {currentStep === 3 && (
+        {/* PASO 4: ¿Qué te gustaría encontrar en una historia? (Máx 3) */}
+        {currentStep === 4 && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
               <h1 className="text-xl sm:text-2xl font-black text-[#26245C] tracking-tight">
@@ -309,16 +372,10 @@ export default function OnboardingPage() {
               </p>
             </div>
 
-            {/* Mascot in Center (Standing with Glowing Book) */}
-            <div className="w-24 h-24 mx-auto rounded-3xl overflow-hidden shadow-magical ring-4 ring-white/90 bg-white">
-              <img
-                src="/assets/mascot/banner_mascot.jpg"
-                alt="Mascota mágica ALEA"
-                className="w-full h-full object-cover"
-              />
+            <div className="flex justify-center">
+              <BrilloAvatar size="sm" expression="reading" name={currentMascotName} />
             </div>
 
-            {/* 6 Cards in 2 columns */}
             <div className="grid grid-cols-2 gap-2.5 max-h-[46vh] overflow-y-auto no-scrollbar pt-1">
               {storyInterests.map((item) => {
                 const isSelected = interests.includes(item.id);
@@ -360,8 +417,8 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* PASO 4 (Mockup Screen 5): ¿Qué protagonistas te gustan? (Máx 3) */}
-        {currentStep === 4 && (
+        {/* PASO 5: ¿Qué protagonistas te gustan? (Máx 3) */}
+        {currentStep === 5 && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
               <h1 className="text-xl sm:text-2xl font-black text-[#26245C] tracking-tight">
@@ -372,16 +429,10 @@ export default function OnboardingPage() {
               </p>
             </div>
 
-            {/* Mascot in Center: Resting on Books */}
-            <div className="w-24 h-24 mx-auto rounded-3xl overflow-hidden shadow-magical ring-4 ring-white/90 bg-white">
-              <img
-                src="/assets/mascot/mascot_reading.jpg"
-                alt="Mascota leyendo en libros"
-                className="w-full h-full object-cover"
-              />
+            <div className="flex justify-center">
+              <BrilloAvatar size="sm" expression="standing" name={currentMascotName} />
             </div>
 
-            {/* 6 Protagonist Cards */}
             <div className="grid grid-cols-2 gap-2.5 max-h-[46vh] overflow-y-auto no-scrollbar pt-1">
               {protagonistTypes.map((item) => {
                 const isSelected = protagonists.includes(item.id);
@@ -423,8 +474,8 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* PASO 5 (Mockup Screen 6): ¿Cómo te gustan las historias? (Selección Única) */}
-        {currentStep === 5 && (
+        {/* PASO 6: ¿Cómo te gustan las historias? (Selección Única) */}
+        {currentStep === 6 && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
               <h1 className="text-xl sm:text-2xl font-black text-[#26245C] tracking-tight">
@@ -435,16 +486,10 @@ export default function OnboardingPage() {
               </p>
             </div>
 
-            {/* Mascot in Center: Flying Happily */}
-            <div className="w-24 h-24 mx-auto rounded-3xl overflow-hidden shadow-magical ring-4 ring-white/90 bg-white">
-              <img
-                src="/assets/mascot/mascot_flying.jpg"
-                alt="Mascota volando con halo"
-                className="w-full h-full object-cover"
-              />
+            <div className="flex justify-center">
+              <BrilloAvatar size="sm" expression="happy" name={currentMascotName} />
             </div>
 
-            {/* 3 Tall Option Cards (Mockup format) */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {rhythmStoryTypes.map((item) => {
                 const isSelected = rhythm === item.id;
@@ -490,8 +535,8 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* PASO 6 (Mockup Screen 7): ¿Qué tipo de libros te llaman más la atención? (Máx 3) */}
-        {currentStep === 6 && (
+        {/* PASO 7: Formato con Exclusión Quirúrgica (HITO 1, Bug #1) */}
+        {currentStep === 7 && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
               <h1 className="text-xl sm:text-2xl font-black text-[#26245C] tracking-tight">
@@ -502,20 +547,14 @@ export default function OnboardingPage() {
               </p>
             </div>
 
-            {/* Mascot in Center */}
-            <div className="w-24 h-24 mx-auto rounded-3xl overflow-hidden shadow-magical ring-4 ring-white/90 bg-white">
-              <img
-                src="/assets/mascot/banner_mascot.jpg"
-                alt="Mascota con libro"
-                className="w-full h-full object-cover"
-              />
+            <div className="flex justify-center">
+              <BrilloAvatar size="sm" expression="reading" name={currentMascotName} />
             </div>
 
-            {/* 5 Format Cards */}
             <div className="grid grid-cols-2 gap-2.5 max-h-[46vh] overflow-y-auto no-scrollbar pt-1">
               {formatOptions.map((item) => {
                 const isSelected = formats.includes(item.id);
-                const isAnyFormat = item.id === "Me da igual el formato si la historia es buena";
+                const isAnyFormat = item.id.toLowerCase().includes("me da igual");
                 const isMax = formats.length >= 3 && !isSelected && !isAnyFormat;
 
                 return (
@@ -556,8 +595,8 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* PASO 7 (Mockup Screen 8): ¿Hay algún libro que te haya gustado especialmente? */}
-        {currentStep === 7 && (
+        {/* PASO 8: Libros conocidos */}
+        {currentStep === 8 && (
           <div className="space-y-3">
             <div className="text-center space-y-1">
               <h1 className="text-xl sm:text-2xl font-black text-[#26245C] tracking-tight">
@@ -568,16 +607,10 @@ export default function OnboardingPage() {
               </p>
             </div>
 
-            {/* Mascot Hugging Star Book (Mockup exact) */}
-            <div className="w-24 h-24 mx-auto rounded-3xl overflow-hidden shadow-magical ring-4 ring-white/90 bg-white">
-              <img
-                src="/assets/mascot/mascot_hugging.jpg"
-                alt="Mascota abrazando libro con estrella"
-                className="w-full h-full object-cover"
-              />
+            <div className="flex justify-center">
+              <BrilloAvatar size="sm" expression="curious" name={currentMascotName} />
             </div>
 
-            {/* Grid of 6 Iconic Books from mockup */}
             <div className="grid grid-cols-3 gap-2.5 max-h-[36vh] overflow-y-auto no-scrollbar pt-1">
               {knownBooks.map((book) => {
                 const isSelected = favoriteBooks.includes(book.id);
@@ -618,7 +651,6 @@ export default function OnboardingPage() {
               })}
             </div>
 
-            {/* Two Helper Options at Bottom */}
             <div className="flex gap-2 pt-1 justify-center">
               <button
                 type="button"
@@ -648,53 +680,47 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* PASO 8 (Mockup Screen 9): ¡Tu universo está preparado! */}
-        {currentStep === 8 && (
+        {/* PASO 9: ¡Tu universo está preparado! (Con mundos REALES) */}
+        {currentStep === 9 && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
               <h1 className="text-2xl font-black text-[#26245C] tracking-tight">
-                ¡Tu universo está preparado!
+                ¡Tu universo está preparado, {nickname}!
               </h1>
               <p className="text-xs text-slate-600 max-w-xs mx-auto">
-                Con toda esta información, ya sé qué historias podrían gustarte.
+                Con {currentMascotName} hemos preparado lecturas hechas a tu medida.
               </p>
             </div>
 
-            {/* Mascot in Celebration Flight */}
-            <div className="w-24 h-24 mx-auto rounded-3xl overflow-hidden shadow-magical ring-4 ring-white/90 bg-white">
-              <img
-                src="/assets/mascot/mascot_celebrate.jpg"
-                alt="Mascota celebrando vuelo"
-                className="w-full h-full object-cover"
-              />
+            <div className="flex justify-center">
+              <BrilloAvatar size="lg" expression="celebrating" name={currentMascotName} />
             </div>
 
-            {/* Tus primeros mundos */}
+            {/* Tus mundos reales elegidos */}
             <div className="space-y-2">
               <span className="text-xs font-bold text-[#30337E] block text-center">
-                Tus primeros mundos:
+                Tus mundos elegidos:
               </span>
-              <div className="flex items-center justify-center gap-2 overflow-x-auto no-scrollbar">
-                {defaultWorlds.map((w) => (
-                  <div
-                    key={w.id}
-                    className="alea-card p-1.5 flex flex-col items-center w-24 text-center shrink-0"
-                  >
-                    <div className="w-20 h-14 rounded-xl overflow-hidden mb-1">
-                      <img src={w.image} alt={w.title} className="w-full h-full object-cover" />
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                {(worlds.length > 0 ? worlds : ["Bosques encantados", "Castillos y secretos"]).map((worldTitle) => {
+                  const found = officialWorlds.find((w) => w.id === worldTitle);
+                  return (
+                    <div
+                      key={worldTitle}
+                      className="alea-card py-2 px-3 rounded-2xl flex items-center gap-2 border border-indigo-100 bg-white shadow-sm"
+                    >
+                      <span className="text-xl">{found?.icon || "✨"}</span>
+                      <span className="text-xs font-black text-[#202154]">{worldTitle}</span>
                     </div>
-                    <span className="text-[10px] font-bold text-[#202154] line-clamp-1">
-                      {w.title}
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
             {/* Te recomiendo */}
             <div className="space-y-2 pt-1">
               <span className="text-xs font-bold text-[#30337E] block text-center">
-                Te recomiendo:
+                Primeras lecturas para ti:
               </span>
               <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto">
                 <div className="alea-card p-2 flex flex-col items-center text-center">
@@ -721,15 +747,19 @@ export default function OnboardingPage() {
         )}
       </div>
 
-      {/* BOTTOM ACTION BUTTON: "Continuar" / "Explorar mi universo" (Matching mockup button) */}
+      {/* BOTTOM ACTION BUTTON */}
       <div className="pt-3 relative z-10">
-        {currentStep < 8 ? (
+        {currentStep < 9 ? (
           <button
             type="button"
             onClick={nextStep}
             className="w-full py-3.5 px-6 rounded-full font-black text-sm bg-[#5457D0] hover:bg-[#4346B8] active:scale-[0.98] text-white shadow-magical flex items-center justify-center gap-2 transition-all"
           >
-            <span>Continuar</span>
+            <span>
+              {currentStep === 1
+                ? `¡Encantado, ${currentMascotName}!`
+                : "Continuar"}
+            </span>
             <ArrowRight size={16} />
           </button>
         ) : (

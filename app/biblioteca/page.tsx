@@ -9,18 +9,26 @@ import {
   Bookmark,
   BookOpen,
   CheckCircle2,
-  Sparkles,
+  Heart,
+  Star,
   ArrowRight,
   Library as LibraryIcon,
   Trash2,
 } from "lucide-react";
 
 export default function BibliotecaPage() {
-  const [activeTab, setActiveTab] = useState<"want_to_read" | "reading" | "finished">("want_to_read");
+  const [activeTab, setActiveTab] = useState<"want_to_read" | "reading" | "finished" | "favorites">("want_to_read");
   const [allBooks, setAllBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { library, loadLibrary, setBookStatus, removeBookStatus } = useLibraryStore();
+  const {
+    library,
+    favorites,
+    loadLibrary,
+    removeBookStatus,
+    toggleFavorite,
+    getRating,
+  } = useLibraryStore();
 
   useEffect(() => {
     loadLibrary();
@@ -48,13 +56,16 @@ export default function BibliotecaPage() {
   const wantToReadBooks = getBooksForTab("want_to_read");
   const readingBooks = getBooksForTab("reading");
   const finishedBooks = getBooksForTab("finished");
+  const favoriteBooks = allBooks.filter((book) => (favorites || []).includes(book.id));
 
   const currentList =
     activeTab === "want_to_read"
       ? wantToReadBooks
       : activeTab === "reading"
       ? readingBooks
-      : finishedBooks;
+      : activeTab === "finished"
+      ? finishedBooks
+      : favoriteBooks;
 
   const tabLabels = [
     {
@@ -62,21 +73,24 @@ export default function BibliotecaPage() {
       label: "Quiero leer",
       count: wantToReadBooks.length,
       icon: Bookmark,
-      activeClass: "bg-[#4F46E5] text-white shadow-magical",
     },
     {
       id: "reading" as const,
-      label: "Estoy leyendo",
+      label: "Leyendo",
       count: readingBooks.length,
       icon: BookOpen,
-      activeClass: "bg-[#4F46E5] text-white shadow-magical",
     },
     {
       id: "finished" as const,
       label: "Leído",
       count: finishedBooks.length,
       icon: CheckCircle2,
-      activeClass: "bg-[#4F46E5] text-white shadow-magical",
+    },
+    {
+      id: "favorites" as const,
+      label: "Favoritos",
+      count: favoriteBooks.length,
+      icon: Heart,
     },
   ];
 
@@ -94,8 +108,8 @@ export default function BibliotecaPage() {
           Tus libros físicos guardados sin prisas ni presiones
         </p>
 
-        {/* 3 Tabs */}
-        <div className="grid grid-cols-3 gap-2 mt-4 bg-white/80 p-1.5 rounded-2xl border border-indigo-100/80 shadow-sm">
+        {/* 4 Tabs (HITO 4, Bug #4) */}
+        <div className="grid grid-cols-4 gap-1.5 sm:gap-2 mt-4 bg-white/80 p-1.5 rounded-2xl border border-indigo-100/80 shadow-sm">
           {tabLabels.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
@@ -105,15 +119,16 @@ export default function BibliotecaPage() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-2 px-2 rounded-xl text-xs font-black flex flex-col items-center justify-center transition-all ${
+                className={`py-2 px-1.5 rounded-xl text-xs font-black flex flex-col items-center justify-center transition-all ${
                   isActive
-                    ? tab.activeClass
+                    ? "bg-[#4F46E5] text-white shadow-magical"
                     : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
                 <div className="flex items-center gap-1">
-                  <Icon size={14} />
-                  <span>{tab.label}</span>
+                  <Icon size={13} className={isActive && tab.id === "favorites" ? "fill-white" : ""} />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="sm:hidden">{tab.label.slice(0, 7)}</span>
                 </div>
                 <span
                   className={`text-[10px] mt-0.5 px-2 py-0.2 rounded-full font-bold ${
@@ -151,58 +166,81 @@ export default function BibliotecaPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {currentList.map((book) => (
-              <div
-                key={book.id}
-                className="alea-card p-3.5 flex items-center justify-between gap-3.5 hover:border-indigo-300 transition-all"
-              >
-                <Link
-                  href={`/book/${book.id}`}
-                  className="flex items-center gap-3.5 flex-1 min-w-0"
-                >
-                  <BookCover
-                    title={book.title}
-                    author={book.author}
-                    coverUrl={book.coverUrl}
-                    color={book.color}
-                    size="sm"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <span className="text-[10px] font-bold text-[#4345B5] bg-[#ECEEFC] px-2 py-0.5 rounded-md inline-block mb-1">
-                      {book.audienceAge} años
-                    </span>
-                    <h3 className="text-sm font-bold text-[#202154] truncate">
-                      {book.title}
-                    </h3>
-                    <p className="text-xs text-slate-500 truncate mb-1">
-                      {book.author}
-                    </p>
-                    <p className="text-[10px] text-slate-400 truncate">
-                      ISBN: {book.isbn}
-                    </p>
-                  </div>
-                </Link>
+            {currentList.map((book) => {
+              const rating = getRating(book.id);
 
-                <div className="flex flex-col gap-1 shrink-0">
+              return (
+                <div
+                  key={book.id}
+                  className="alea-card p-3.5 flex items-center justify-between gap-3.5 hover:border-indigo-300 transition-all"
+                >
                   <Link
                     href={`/book/${book.id}`}
-                    className="p-2 rounded-xl text-indigo-600 hover:bg-indigo-50 transition-colors"
-                    title="Ver ficha"
+                    className="flex items-center gap-3.5 flex-1 min-w-0"
                   >
-                    <ArrowRight size={18} />
+                    <BookCover
+                      title={book.title}
+                      author={book.author}
+                      coverUrl={book.coverUrl}
+                      color={book.color}
+                      size="sm"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <span className="text-[10px] font-bold text-[#4345B5] bg-[#ECEEFC] px-2 py-0.5 rounded-md inline-block">
+                          {book.audienceAge} años
+                        </span>
+                        {rating && (
+                          <div className="flex items-center text-amber-500 text-[10px] font-bold bg-amber-50 px-1.5 py-0.5 rounded-md border border-amber-200">
+                            <Star size={10} className="fill-amber-400 mr-0.5" />
+                            <span>{rating.stars}/5</span>
+                          </div>
+                        )}
+                      </div>
+                      <h3 className="text-sm font-bold text-[#202154] truncate">
+                        {book.title}
+                      </h3>
+                      <p className="text-xs text-slate-500 truncate mb-0.5">
+                        {book.author}
+                      </p>
+                      <p className="text-[10px] text-slate-400 truncate">
+                        ISBN: {book.isbn}
+                      </p>
+                    </div>
                   </Link>
 
-                  <button
-                    type="button"
-                    onClick={() => removeBookStatus(book.id)}
-                    className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                    title="Quitar de mi biblioteca"
-                  >
-                    <Trash2 size={16} />
-                  </button>
+                  <div className="flex flex-col gap-1 shrink-0">
+                    <Link
+                      href={`/book/${book.id}`}
+                      className="p-2 rounded-xl text-indigo-600 hover:bg-indigo-50 transition-colors"
+                      title="Ver ficha"
+                    >
+                      <ArrowRight size={18} />
+                    </Link>
+
+                    {activeTab === "favorites" ? (
+                      <button
+                        type="button"
+                        onClick={() => toggleFavorite(book.id)}
+                        className="p-2 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors"
+                        title="Quitar de favoritos"
+                      >
+                        <Heart size={16} className="fill-rose-500" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => removeBookStatus(book.id)}
+                        className="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                        title="Quitar de mi biblioteca"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

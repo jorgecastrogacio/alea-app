@@ -2,6 +2,7 @@ import { create } from "zustand";
 
 export interface UserProfile {
   nickname: string;
+  mascotName?: string;
   age: string;
   worlds: string[];
   interests: string[];
@@ -18,6 +19,7 @@ interface OnboardingState extends UserProfile {
   nextStep: () => void;
   prevStep: () => void;
   setNickname: (name: string) => void;
+  setMascotName: (name: string) => void;
   setAge: (age: string) => void;
   toggleWorld: (world: string) => void;
   toggleInterest: (interest: string) => void;
@@ -25,6 +27,7 @@ interface OnboardingState extends UserProfile {
   setRhythm: (rhythm: string) => void;
   toggleFormat: (format: string) => void;
   setReadingHabit: (habit: string) => void;
+  updatePreferences: (partial: Partial<UserProfile>) => void;
   resetOnboarding: () => void;
   loadFromStorage: () => boolean;
   saveToStorage: () => void;
@@ -32,25 +35,31 @@ interface OnboardingState extends UserProfile {
 
 const STORAGE_KEY = "alea_user_profile";
 
+const isAnyFormatOption = (fmt: string) => {
+  return fmt.toLowerCase().includes("me da igual");
+};
+
 export const useOnboardingStore = create<OnboardingState>((set, get) => ({
   currentStep: 1,
-  nickname: "",
+  nickname: "Daniela",
+  mascotName: "Brillo",
   age: "11",
-  worlds: [],
-  interests: [],
-  protagonists: [],
-  rhythm: "",
-  formats: [],
-  readingHabit: "",
+  worlds: ["Bosques encantados", "Castillos y secretos"],
+  interests: ["Vivir una gran aventura", "Resolver un misterio"],
+  protagonists: ["Niños y niñas como yo"],
+  rhythm: "¡Que pasen cosas!",
+  formats: ["Me da igual el formato si la historia es buena"],
+  readingHabit: "Lector habitual",
 
   setStep: (step) => set({ currentStep: step }),
   nextStep: () => set((state) => ({ currentStep: Math.min(state.currentStep + 1, 9) })),
   prevStep: () => set((state) => ({ currentStep: Math.max(state.currentStep - 1, 1) })),
 
   setNickname: (nickname) => set({ nickname }),
+  setMascotName: (mascotName) => set({ mascotName: mascotName.trim() || "Brillo" }),
   setAge: (age) => set({ age }),
 
-  // Pantalla 3: Mundos (Máximo 3 opciones)
+  // HITO 1: Mundos (Máximo 3 opciones)
   toggleWorld: (world) => {
     const { worlds } = get();
     if (worlds.includes(world)) {
@@ -62,7 +71,7 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
     }
   },
 
-  // Pantalla 4: Qué encontrar (Máximo 3 opciones)
+  // Qué encontrar (Máximo 3 opciones)
   toggleInterest: (interest) => {
     const { interests } = get();
     if (interests.includes(interest)) {
@@ -74,7 +83,7 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
     }
   },
 
-  // Pantalla 5: Protagonistas (Máximo 3 opciones)
+  // Protagonistas (Máximo 3 opciones)
   toggleProtagonist: (protagonist) => {
     const { protagonists } = get();
     if (protagonists.includes(protagonist)) {
@@ -86,45 +95,71 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
     }
   },
 
-  // Pantalla 6: Ritmo (Selección ÚNICA obligatoria)
+  // Ritmo (Selección Única obligatoria)
   setRhythm: (rhythm) => set({ rhythm }),
 
-  // Pantalla 7: Formato (Máximo 3 opciones)
-  // EXCEPCIÓN QUIRÚRGICA: Si se marca "Me da igual el formato", el resto se desmarcan automáticamente.
-  // Y si se selecciona otra opción teniendo "Me da igual el formato", este último se retira.
+  // HITO 1: Formato con REGLA EXCLUYENTE ESTRICTA (Bug #1)
+  // Al hacer clic en "Me da igual el formato", las otras opciones pasan forzosamente a false (desmarcadas).
+  // Y si se selecciona otra opción específica, "Me da igual el formato" se retira de inmediato.
   toggleFormat: (format) => {
     const { formats } = get();
-    const ANY_FORMAT = "Me da igual el formato";
 
-    if (format === ANY_FORMAT) {
-      // Si se pulsa "Me da igual el formato", si ya estaba marcado se desmarca, si no, se queda SOLO este
-      if (formats.includes(ANY_FORMAT)) {
+    if (isAnyFormatOption(format)) {
+      if (formats.some(isAnyFormatOption)) {
         set({ formats: [] });
       } else {
-        set({ formats: [ANY_FORMAT] });
+        // Se queda FORZOSAMENTE ÚNICO
+        set({ formats: [format] });
       }
       return;
     }
 
-    // Si se pulsa cualquier otro formato y estaba "Me da igual el formato", se remueve primero
-    const cleanedFormats = formats.filter((f) => f !== ANY_FORMAT);
+    // Si se pulsa cualquier formato específico, se purga cualquier "Me da igual..."
+    const cleaned = formats.filter((f) => !isAnyFormatOption(f));
 
-    if (cleanedFormats.includes(format)) {
-      set({ formats: cleanedFormats.filter((f) => f !== format) });
+    if (cleaned.includes(format)) {
+      set({ formats: cleaned.filter((f) => f !== format) });
     } else {
-      if (cleanedFormats.length < 3) {
-        set({ formats: [...cleanedFormats, format] });
+      if (cleaned.length < 3) {
+        set({ formats: [...cleaned, format] });
       }
     }
   },
 
-  // Pantalla 8: Hábito o experiencia de lectura
   setReadingHabit: (readingHabit) => set({ readingHabit }),
+
+  // HITO 6: Edición directa de intereses sin reiniciar onboarding (Bug #10)
+  updatePreferences: (partial) => {
+    set((state) => {
+      const updated = { ...state, ...partial };
+      if (typeof window !== "undefined") {
+        try {
+          const profile: UserProfile = {
+            nickname: updated.nickname || "Daniela",
+            mascotName: updated.mascotName || "Brillo",
+            age: updated.age || "11",
+            worlds: updated.worlds || [],
+            interests: updated.interests || [],
+            protagonists: updated.protagonists || [],
+            rhythm: updated.rhythm || "¡Que pasen cosas!",
+            formats: updated.formats || [],
+            readingHabit: updated.readingHabit || "",
+            completedAt: updated.completedAt || new Date().toISOString(),
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+        } catch (e) {
+          console.error("Error updating profile in localStorage:", e);
+        }
+      }
+      return partial;
+    });
+  },
 
   resetOnboarding: () => {
     set({
       currentStep: 1,
       nickname: "",
+      mascotName: "Brillo",
       age: "11",
       worlds: [],
       interests: [],
@@ -142,13 +177,14 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
       if (saved) {
         const parsed = JSON.parse(saved);
         set({
-          nickname: parsed.nickname || "Lector",
+          nickname: parsed.nickname || "Daniela",
+          mascotName: parsed.mascotName || "Brillo",
           age: parsed.age || "11",
-          worlds: parsed.worlds || [],
-          interests: parsed.interests || [],
-          protagonists: parsed.protagonists || [],
-          rhythm: parsed.rhythm || "",
-          formats: parsed.formats || [],
+          worlds: parsed.worlds || ["Bosques encantados", "Castillos y secretos"],
+          interests: parsed.interests || ["Vivir una gran aventura"],
+          protagonists: parsed.protagonists || ["Niños y niñas como yo"],
+          rhythm: parsed.rhythm || "¡Que pasen cosas!",
+          formats: parsed.formats || ["Me da igual el formato si la historia es buena"],
           readingHabit: parsed.readingHabit || "",
         });
         return true;
@@ -161,9 +197,10 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
 
   saveToStorage: () => {
     if (typeof window === "undefined") return;
-    const { nickname, age, worlds, interests, protagonists, rhythm, formats, readingHabit } = get();
+    const { nickname, mascotName, age, worlds, interests, protagonists, rhythm, formats, readingHabit } = get();
     const profile: UserProfile = {
-      nickname: nickname.trim() || "Explorador",
+      nickname: nickname.trim() || "Daniela",
+      mascotName: mascotName?.trim() || "Brillo",
       age,
       worlds,
       interests,

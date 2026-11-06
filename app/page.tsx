@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { BrilloAvatar } from "@/components/BrilloAvatar";
 import {
   Sparkles,
   ArrowRight,
-  BookOpen,
   Library,
   Shield,
   Compass,
@@ -39,15 +39,9 @@ export default function HomePage() {
 
   return (
     <div className="flex-1 flex flex-col justify-between p-6 bg-gradient-to-b from-[#E7EAFB] via-[#F4F4FD] to-[#ECEBFA] text-slate-800">
-      {/* Top Brand with Luminous Mascot */}
+      {/* Top Brand with Luminous Mascot (HITO 2 & HITO 6, Bug #14) */}
       <div className="pt-6 text-center space-y-4">
-        <div className="relative w-28 h-28 mx-auto rounded-3xl overflow-hidden shadow-magical ring-4 ring-white/90 bg-white">
-          <img
-            src="/assets/mascot/banner_mascot.jpg"
-            alt="Mascota mágica ALEA"
-            className="w-full h-full object-cover"
-          />
-        </div>
+        <BrilloAvatar size="xl" expression="celebrating" name="Brillo" className="mx-auto" />
 
         <div>
           <span className="text-[11px] font-bold tracking-widest text-[#474AB6] uppercase">
@@ -56,8 +50,11 @@ export default function HomePage() {
           <h1 className="text-3xl font-black text-[#26245C] tracking-tight mt-1">
             ALEA <span className="text-indigo-500 font-bold text-xl">✦</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-xs mx-auto leading-relaxed">
-            Descubre tu próxima historia física favorita en papel. Sin algoritmos adictivos ni pantallas que distraen.
+          <p className="text-sm font-bold text-indigo-900 mt-2 max-w-xs mx-auto leading-relaxed">
+            Descubre tu próxima gran historia
+          </p>
+          <p className="text-xs text-slate-600 mt-1 max-w-xs mx-auto leading-relaxed">
+            Recomendaciones de libros físicos en papel, sin pantallas adictivas ni publicidad.
           </p>
         </div>
       </div>

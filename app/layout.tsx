@@ -3,19 +3,17 @@ import "./globals.css";
 import AppShell from "@/components/AppShell";
 
 export const metadata: Metadata = {
-  title: "ALEA | Descubre tu próximo libro",
+  title: "ALEA | Descubre tu próxima gran historia",
   description: "Recomendador de literatura infantil y juvenil en España. Descubre libros físicos sin adicción ni pantallas invasivas.",
   manifest: "/manifest.json",
   icons: {
-    icon: "/assets/mascot/banner_mascot.jpg",
+    icon: "/assets/mascot/mascot_flying.jpg",
   },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   themeColor: "#4f46e5",
 };
 

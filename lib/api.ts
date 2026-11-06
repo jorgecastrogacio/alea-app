@@ -11,6 +11,9 @@ export interface Book {
   synopsis: string;
   pages?: number;
   editorial?: string;
+  language?: string;
+  difficulty?: string;
+  edition?: string;
   color?: string;
 }
 
