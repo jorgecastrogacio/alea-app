@@ -248,6 +248,11 @@ export default function BookDetailPage({ params }: PageProps) {
           {book.edition && <span>• {book.edition}</span>}
         </div>
 
+        {/* Aviso de divulgación cultural y derecho de cita (Hito de Rigor Editorial) */}
+        <p className="text-[10px] text-slate-400 max-w-md text-center leading-normal">
+          Carátula de referencia y datos bibliográficos mostrados con fines de prescripción lectora y derecho de cita cultural (art. 32 LPI). Los derechos pertenecen a sus autores y editoriales.
+        </p>
+
         {/* 3 Status Selector Buttons (Exclusive toggle) */}
         <div className="w-full max-w-sm pt-2 space-y-2">
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">

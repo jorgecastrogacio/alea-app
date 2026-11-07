@@ -16,8 +16,8 @@
       "recommended": 10
     },
     "difficulty": "Media",
-    "coverUrl": "/assets/books/matilda.jpg",
-    "coverWebp": "/assets/books/alea-matilda.webp",
+    "coverUrl": "/assets/books/alea-matilda.jpg",
+    "coverWebp": "/assets/books/alea-matilda.jpg",
     "color": "#eab308",
     "tags": [
       "Lugares como el nuestro",
@@ -46,8 +46,8 @@
       "recommended": 11
     },
     "difficulty": "Media",
-    "coverUrl": "/assets/books/wonder.jpg",
-    "coverWebp": "/assets/books/alea-wonder.webp",
+    "coverUrl": "/assets/books/alea-wonder.jpg",
+    "coverWebp": "/assets/books/alea-wonder.jpg",
     "color": "#38bdf8",
     "tags": [
       "Lugares como el nuestro",
@@ -76,8 +76,8 @@
       "recommended": 9
     },
     "difficulty": "Fácil",
-    "coverUrl": "/assets/books/el_principito.jpg",
-    "coverWebp": "/assets/books/alea-principito.webp",
+    "coverUrl": "/assets/books/alea-principito.jpg",
+    "coverWebp": "/assets/books/alea-principito.jpg",
     "color": "#60a5fa",
     "tags": [
       "Planetas y galaxias",
@@ -105,8 +105,8 @@
       "recommended": 11
     },
     "difficulty": "Media",
-    "coverUrl": "/assets/books/harry_potter.jpg",
-    "coverWebp": "/assets/books/alea-harry-potter.webp",
+    "coverUrl": "/assets/books/alea-harry-potter.jpg",
+    "coverWebp": "/assets/books/alea-harry-potter.jpg",
     "color": "#a855f7",
     "tags": [
       "Castillos y secretos",
@@ -135,8 +135,8 @@
       "recommended": 10
     },
     "difficulty": "Fácil",
-    "coverUrl": "/assets/books/tintin.jpg",
-    "coverWebp": "/assets/books/alea-tintin.webp",
+    "coverUrl": "/assets/books/alea-tintin.jpg",
+    "coverWebp": "/assets/books/alea-tintin.jpg",
     "color": "#f97316",
     "tags": [
       "Islas y aventuras",
@@ -165,8 +165,8 @@
       "recommended": 10
     },
     "difficulty": "Fácil",
-    "coverUrl": "/assets/books/greg.jpg",
-    "coverWebp": "/assets/books/alea-greg.webp",
+    "coverUrl": "/assets/books/alea-greg.jpg",
+    "coverWebp": "/assets/books/alea-greg.jpg",
     "color": "#ef4444",
     "tags": [
       "Lugares como el nuestro",
@@ -195,8 +195,8 @@
       "recommended": 12
     },
     "difficulty": "Media",
-    "coverUrl": "/assets/books/wonder.jpg",
-    "coverWebp": "/assets/books/alea-invisible.webp",
+    "coverUrl": "/assets/books/alea-invisible.jpg",
+    "coverWebp": "/assets/books/alea-invisible.jpg",
     "color": "#6366f1",
     "tags": [
       "Lugares como el nuestro",
@@ -225,8 +225,8 @@
       "recommended": 10
     },
     "difficulty": "Fácil",
-    "coverUrl": "/assets/books/matilda.jpg",
-    "coverWebp": "/assets/books/alea-futbolisimos.webp",
+    "coverUrl": "/assets/books/alea-futbolisimos.jpg",
+    "coverWebp": "/assets/books/alea-futbolisimos.jpg",
     "color": "#10b981",
     "tags": [
       "Lugares como el nuestro",
@@ -240,7 +240,7 @@
   },
   {
     "id": "alea-amanda-black",
-    "isbn": "9788417922405",
+    "isbn": "9788417921378",
     "title": "Amanda Black 1: Una herencia peligrosa",
     "author": "Juan Gómez-Jurado y Bárbara Montes",
     "editorial": "B de Blok",
@@ -255,8 +255,8 @@
       "recommended": 11
     },
     "difficulty": "Media",
-    "coverUrl": "/assets/books/tintin.jpg",
-    "coverWebp": "/assets/books/alea-amanda-black.webp",
+    "coverUrl": "/assets/books/alea-amanda-black.jpg",
+    "coverWebp": "/assets/books/alea-amanda-black.jpg",
     "color": "#1e293b",
     "tags": [
       "Castillos y secretos",
@@ -285,8 +285,8 @@
       "recommended": 8
     },
     "difficulty": "Fácil",
-    "coverUrl": "/assets/books/el_principito.jpg",
-    "coverWebp": "/assets/books/alea-monstruos.webp",
+    "coverUrl": "/assets/books/alea-monstruos.jpg",
+    "coverWebp": "/assets/books/alea-monstruos.jpg",
     "color": "#059669",
     "tags": [
       "Islas y aventuras",
@@ -314,8 +314,8 @@
       "recommended": 12
     },
     "difficulty": "Media",
-    "coverUrl": "/assets/books/harry_potter.jpg",
-    "coverWebp": "/assets/books/alea-finis-mundi.webp",
+    "coverUrl": "/assets/books/alea-finis-mundi.jpg",
+    "coverWebp": "/assets/books/alea-finis-mundi.jpg",
     "color": "#854d0e",
     "tags": [
       "Castillos y secretos",
@@ -343,8 +343,8 @@
       "recommended": 13
     },
     "difficulty": "Avanzada",
-    "coverUrl": "/assets/books/harry_potter.jpg",
-    "coverWebp": "/assets/books/alea-idhun.webp",
+    "coverUrl": "/assets/books/alea-idhun.jpg",
+    "coverWebp": "/assets/books/alea-idhun.jpg",
     "color": "#4338ca",
     "tags": [
       "Mundos de magia y fantasía",
@@ -372,8 +372,8 @@
       "recommended": 9
     },
     "difficulty": "Fácil",
-    "coverUrl": "/assets/books/greg.jpg",
-    "coverWebp": "/assets/books/alea-manolito.webp",
+    "coverUrl": "/assets/books/alea-manolito.jpg",
+    "coverWebp": "/assets/books/alea-manolito.jpg",
     "color": "#0284c7",
     "tags": [
       "Lugares como el nuestro",
@@ -401,8 +401,8 @@
       "recommended": 11
     },
     "difficulty": "Media",
-    "coverUrl": "/assets/books/tintin.jpg",
-    "coverWebp": "/assets/books/alea-nemo.webp",
+    "coverUrl": "/assets/books/alea-nemo.jpg",
+    "coverWebp": "/assets/books/alea-nemo.jpg",
     "color": "#0369a1",
     "tags": [
       "Mundos submarinos",
@@ -430,8 +430,8 @@
       "recommended": 10
     },
     "difficulty": "Fácil",
-    "coverUrl": "/assets/books/wonder.jpg",
-    "coverWebp": "/assets/books/alea-zapatillas-rojas.webp",
+    "coverUrl": "/assets/books/alea-zapatillas-rojas.jpg",
+    "coverWebp": "/assets/books/alea-zapatillas-rojas.jpg",
     "color": "#f43f5e",
     "tags": [
       "Lugares como el nuestro",

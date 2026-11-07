@@ -116,7 +116,7 @@ export function BookCover3D({
         {coverUrl && !imageError ? (
           <img
             src={coverUrl}
-            alt={`Portada oficial de ${title}`}
+            alt={`Carátula de referencia de la edición física: ${title}, por ${author}`}
             onError={() => setImageError(true)}
             className="w-full h-full object-cover rounded-r-xl"
             loading="lazy"
