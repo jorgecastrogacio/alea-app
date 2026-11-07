@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useOnboardingStore } from "@/store/useOnboardingStore";
 import { BrilloAvatar } from "@/components/BrilloAvatar";
 import { sanitizeNickname } from "@/lib/security/sanitizer";
+import { sounds } from "@/lib/soundEffects";
+import { triggerMagicConfetti } from "@/lib/confetti";
 import {
   ArrowLeft,
   Check,
@@ -161,10 +163,18 @@ export default function OnboardingPage() {
       setNickname(result.sanitized);
     }
 
+    sounds.playPop();
+    if (currentStep === 8) {
+      sounds.playCelebration();
+      triggerMagicConfetti();
+    }
+
     nextStep();
   };
 
   const handleFinish = () => {
+    sounds.playCelebration();
+    triggerMagicConfetti();
     saveToStorage();
     router.push("/descubre");
   };

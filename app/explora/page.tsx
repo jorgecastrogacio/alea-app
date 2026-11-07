@@ -10,6 +10,7 @@ import {
   X,
   BookOpen,
 } from "lucide-react";
+import { sounds } from "@/lib/soundEffects";
 
 export default function ExploraPage() {
   const [books, setBooks] = useState<Book[]>([]);
@@ -107,7 +108,10 @@ export default function ExploraPage() {
           ].map((item) => (
             <button
               key={item.id}
-              onClick={() => setSelectedAge(item.id)}
+              onClick={() => {
+                sounds.playPop();
+                setSelectedAge(item.id);
+              }}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
                 selectedAge === item.id
                   ? "bg-[#4F46E5] text-white shadow-sm"
@@ -125,7 +129,10 @@ export default function ExploraPage() {
             Tema:
           </span>
           <button
-            onClick={() => setSelectedTag("todos")}
+            onClick={() => {
+              sounds.playPop();
+              setSelectedTag("todos");
+            }}
             className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
               selectedTag === "todos"
                 ? "bg-[#26245C] text-white"
@@ -137,7 +144,10 @@ export default function ExploraPage() {
           {allTags.map((tag) => (
             <button
               key={tag}
-              onClick={() => setSelectedTag(tag)}
+              onClick={() => {
+                sounds.playPop();
+                setSelectedTag(tag);
+              }}
               className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
                 selectedTag === tag
                   ? "bg-[#4F46E5] text-white"

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { UserProfile, useOnboardingStore } from "@/store/useOnboardingStore";
 import { useLibraryStore } from "@/store/useLibraryStore";
 import { BrilloAvatar } from "@/components/BrilloAvatar";
+import { LivingMascot } from "@/components/LivingMascot";
 import { EditPreferencesModal } from "@/components/EditPreferencesModal";
 import {
   Sparkles,
@@ -181,6 +182,31 @@ export default function UniversoPage() {
             <span className="text-xl font-black block text-rose-300">{favoritesCount}</span>
             <span className="text-[10px] text-indigo-200 font-medium">Favoritos</span>
           </div>
+        </div>
+      </div>
+
+      {/* Mascota Viva Interactiva */}
+      <div className="alea-card p-6 bg-gradient-to-r from-amber-50 via-indigo-50/50 to-purple-50 border-2 border-indigo-100/80 flex flex-col sm:flex-row items-center gap-6 shadow-sm">
+        <div className="shrink-0">
+          <LivingMascot
+            size="lg"
+            mood="idle"
+            name={mascotName}
+            speechText={`¡Hola ${nickname}! Tócame para jugar o haz clic en cualquier libro para verlo en 3D.`}
+            enableInteraction={true}
+          />
+        </div>
+        <div className="flex-1 text-center sm:text-left space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100/80 text-amber-800 text-[11px] font-bold">
+            <Sparkles size={12} className="text-amber-500" />
+            <span>Tu Guía Mágico Interactivo</span>
+          </div>
+          <h3 className="text-lg font-black text-[#26245C]">
+            {mascotName} te acompaña en cada lectura
+          </h3>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            Toca a {mascotName} en cualquier momento para escuchar sus consejos y recibir energía lectora mágica.
+          </p>
         </div>
       </div>
 

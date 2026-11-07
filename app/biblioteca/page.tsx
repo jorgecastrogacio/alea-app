@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getBooks, Book } from "@/lib/api";
 import { useLibraryStore } from "@/store/useLibraryStore";
 import BookCover from "@/components/BookCover";
+import { sounds } from "@/lib/soundEffects";
 import {
   Bookmark,
   BookOpen,
@@ -118,7 +119,10 @@ export default function BibliotecaPage() {
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  sounds.playPop();
+                  setActiveTab(tab.id);
+                }}
                 className={`py-2 px-1.5 rounded-xl text-xs font-black flex flex-col items-center justify-center transition-all ${
                   isActive
                     ? "bg-[#4F46E5] text-white shadow-magical"

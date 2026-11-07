@@ -10,6 +10,8 @@ import BookCover from "@/components/BookCover";
 import { BrilloAvatar } from "@/components/BrilloAvatar";
 import { EditPreferencesModal } from "@/components/EditPreferencesModal";
 import { LibraryLocator } from "@/components/LibraryLocator";
+import { sounds } from "@/lib/soundEffects";
+import { triggerMagicConfetti } from "@/lib/confetti";
 import {
   Sparkles,
   ArrowRight,
@@ -97,6 +99,12 @@ export default function DescubrePage() {
     loadData();
   };
 
+  const handleAddBook = (bookId: string, e: React.MouseEvent) => {
+    sounds.playPop();
+    triggerMagicConfetti(e.clientX, e.clientY);
+    setBookStatus(bookId, "want_to_read");
+  };
+
   const handleOpenLibrary = (bookToSearch?: Book) => {
     setModalBook(bookToSearch || books[0] || null);
     setShowLibraryModal(true);
@@ -141,10 +149,15 @@ export default function DescubrePage() {
           </Link>
         </div>
 
-        {/* Banner Content with Clean Mascot */}
+        {/* Banner Content with Interactive Living Mascot */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative z-0">
           <div className="flex items-center gap-4 sm:gap-6">
-            <BrilloAvatar size="lg" expression="happy" name={mascotName} />
+            <BrilloAvatar
+              size="lg"
+              expression="happy"
+              name={mascotName}
+              speechText="¡Tócame para hablar conmigo o busca tu libro favorito!"
+            />
 
             {/* Greeting Typography with real names */}
             <div className="text-center sm:text-left">
@@ -159,15 +172,22 @@ export default function DescubrePage() {
             </div>
           </div>
 
-          <div className="hidden lg:flex items-center justify-center shrink-0 pr-4">
-            <div className="w-28 h-24 rounded-2xl overflow-hidden shadow-magical border border-white/60 bg-white/30">
-              <img
-                src="/assets/glowing_book.jpg"
-                alt="Libro Mágico ALEA"
-                className="w-full h-full object-cover"
-              />
+          {recommendations[0] && (
+            <div className="hidden lg:flex flex-col items-center justify-center shrink-0 pr-4">
+              <Link href={`/book/${recommendations[0].book.id}`} className="group flex flex-col items-center">
+                <BookCover
+                  title={recommendations[0].book.title}
+                  author={recommendations[0].book.author}
+                  coverUrl={recommendations[0].book.coverUrl}
+                  color={recommendations[0].book.color}
+                  size="sm"
+                />
+                <span className="text-[10px] font-bold text-indigo-700 bg-white/95 px-2.5 py-0.5 rounded-full shadow-sm mt-1.5 block text-center border border-indigo-100 group-hover:scale-105 transition-transform">
+                  ✦ Recomendado ✦
+                </span>
+              </Link>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -314,8 +334,8 @@ export default function DescubrePage() {
                 <div className="mt-3 pt-2.5 border-t border-indigo-50 flex items-center justify-between">
                   <button
                     type="button"
-                    onClick={() => setBookStatus(book.id, "want_to_read")}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    onClick={(e) => handleAddBook(book.id, e)}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 ${
                       isAdded
                         ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                         : "bg-white text-slate-700 border border-indigo-100 hover:bg-indigo-50/60"

@@ -10,6 +10,9 @@ import { getBookRecommendationReason } from "@/lib/recommendation";
 import BookCover from "@/components/BookCover";
 import { BrilloAvatar } from "@/components/BrilloAvatar";
 import { LibraryLocator } from "@/components/LibraryLocator";
+import { BookCover3D } from "@/components/BookCover3D";
+import { sounds } from "@/lib/soundEffects";
+import { triggerMagicConfetti } from "@/lib/confetti";
 import {
   ArrowLeft,
   Bookmark,
@@ -137,8 +140,25 @@ export default function BookDetailPage({ params }: PageProps) {
     }
   };
 
+  const handleToggleFavorite = () => {
+    sounds.playPop();
+    toggleFavorite(book.id);
+  };
+
+  const handleSetStatus = (status: "want_to_read" | "reading" | "finished") => {
+    if (status === "finished") {
+      sounds.playCelebration();
+      triggerMagicConfetti();
+    } else {
+      sounds.playPop();
+    }
+    setBookStatus(book.id, status);
+  };
+
   const handleSaveRating = () => {
     setRating(book.id, selectedStars, selectedTags);
+    sounds.playCelebration();
+    triggerMagicConfetti();
     setShowThankYou(true);
     setTimeout(() => {
       setShowThankYou(false);
@@ -163,9 +183,9 @@ export default function BookDetailPage({ params }: PageProps) {
         </span>
 
         <div className="flex items-center gap-2">
-          {/* Favorite button (HITO 4, Bug #4) */}
+          {/* Favorite button */}
           <button
-            onClick={() => toggleFavorite(book.id)}
+            onClick={handleToggleFavorite}
             className={`w-10 h-10 rounded-full bg-white shadow-sm border transition-all flex items-center justify-center ${
               bookIsFavorite
                 ? "border-rose-300 text-rose-500 bg-rose-50/50 scale-105"
@@ -191,14 +211,15 @@ export default function BookDetailPage({ params }: PageProps) {
 
       {/* Book Hero Presentation */}
       <div className="alea-card p-6 md:p-8 flex flex-col items-center text-center space-y-5">
-        {/* Protagonist Cover */}
-        <div className="transform hover:scale-105 transition-transform duration-300">
-          <BookCover
+        {/* Protagonist Cover 3D with Gyroscope tilt and glare */}
+        <div className="py-2">
+          <BookCover3D
             title={book.title}
             author={book.author}
             coverUrl={book.coverUrl}
             color={book.color}
             size="lg"
+            enableTilt={true}
           />
         </div>
 
@@ -214,7 +235,7 @@ export default function BookDetailPage({ params }: PageProps) {
           </p>
         </div>
 
-        {/* Technical metadata (HITO 3, Bug #6: Language, Difficulty, Edition) */}
+        {/* Technical metadata */}
         <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-600 font-medium py-1.5 px-4 bg-[#F4F5FD] rounded-2xl border border-indigo-100/60 max-w-md">
           <span>ISBN: {book.isbn}</span>
           {book.pages && <span>• {book.pages} págs.</span>}
@@ -235,7 +256,7 @@ export default function BookDetailPage({ params }: PageProps) {
           <div className="grid grid-cols-3 gap-2">
             <button
               type="button"
-              onClick={() => setBookStatus(book.id, "want_to_read")}
+              onClick={() => handleSetStatus("want_to_read")}
               className={`py-2.5 px-2 rounded-2xl text-xs font-bold flex flex-col items-center justify-center gap-1 transition-all ${
                 currentStatus === "want_to_read"
                   ? "bg-amber-500 text-white shadow-magical ring-2 ring-amber-300 scale-105"
@@ -248,7 +269,7 @@ export default function BookDetailPage({ params }: PageProps) {
 
             <button
               type="button"
-              onClick={() => setBookStatus(book.id, "reading")}
+              onClick={() => handleSetStatus("reading")}
               className={`py-2.5 px-2 rounded-2xl text-xs font-bold flex flex-col items-center justify-center gap-1 transition-all ${
                 currentStatus === "reading"
                   ? "bg-[#4F46E5] text-white shadow-magical ring-2 ring-indigo-300 scale-105"
@@ -261,7 +282,7 @@ export default function BookDetailPage({ params }: PageProps) {
 
             <button
               type="button"
-              onClick={() => setBookStatus(book.id, "finished")}
+              onClick={() => handleSetStatus("finished")}
               className={`py-2.5 px-2 rounded-2xl text-xs font-bold flex flex-col items-center justify-center gap-1 transition-all ${
                 currentStatus === "finished"
                   ? "bg-emerald-600 text-white shadow-magical ring-2 ring-emerald-300 scale-105"
