@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, BookMarked, Trophy } from "lucide-react";
+import { Home, Compass, BookMarked, Sparkles } from "lucide-react";
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -32,9 +32,9 @@ export default function BottomNav() {
       activePattern: /^\/biblioteca/,
     },
     {
-      name: "Mis logros",
+      name: "Mi Universo",
       href: "/universo",
-      icon: Trophy,
+      icon: Sparkles,
       activePattern: /^\/universo/,
     },
   ];
@@ -42,7 +42,7 @@ export default function BottomNav() {
   return (
     <nav
       aria-label="Navegación principal"
-      className="fixed bottom-0 left-0 right-0 z-50 flex justify-center pointer-events-none md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-40 flex justify-center pointer-events-none md:hidden"
     >
       <div className="w-full max-w-md bg-white/95 backdrop-blur-md border-t border-indigo-100/90 px-3 py-2 flex items-center justify-around pointer-events-auto shadow-lg shadow-indigo-950/10 rounded-t-3xl">
         {navItems.map((item) => {

@@ -10,6 +10,7 @@ import {
   BookMarked,
   Trophy,
   Sparkles,
+  Shield,
   ChevronDown,
   Search,
   Bell,
@@ -59,7 +60,7 @@ export default function AppShell({ children }: AppShellProps) {
     { name: "Inicio", href: "/descubre", icon: Home, pattern: /^\/(descubre|$)/ },
     { name: "Explorar", href: "/explora", icon: Compass, pattern: /^\/explora/ },
     { name: "Mi biblioteca", href: "/biblioteca", icon: BookMarked, pattern: /^\/biblioteca/ },
-    { name: "Mis logros", href: "/universo", icon: Trophy, pattern: /^\/universo/ },
+    { name: "Mi Universo", href: "/universo", icon: Sparkles, pattern: /^\/universo/ },
   ];
 
   return (
@@ -126,10 +127,19 @@ export default function AppShell({ children }: AppShellProps) {
               <ChevronDown size={14} className="text-slate-400" />
             </div>
           </Link>
+
+          {/* Enlace al Área Familia */}
+          <Link
+            href="/familia"
+            className="mt-2.5 flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-xl text-[11px] font-bold text-slate-500 hover:text-indigo-600 hover:bg-indigo-50/60 transition-colors w-full border border-slate-100"
+          >
+            <Shield size={13} className="text-emerald-500" />
+            <span>Área Familia</span>
+          </Link>
         </aside>
 
-        {/* MAIN APP CONTENT */}
-        <main className="flex-1 flex flex-col min-h-screen md:min-h-0 relative pb-20 md:pb-6 overflow-y-auto bg-[#F9FAFF]/60">
+        {/* MAIN APP CONTENT (pb-28 para que la barra móvil nunca tape botones ni texto) */}
+        <main className="flex-1 flex flex-col min-h-screen md:min-h-0 relative pb-28 md:pb-6 overflow-y-auto bg-[#F9FAFF]/60">
           {children}
         </main>
 

@@ -21,13 +21,17 @@ export default function BibliotecaPage() {
   const [activeTab, setActiveTab] = useState<"want_to_read" | "reading" | "finished" | "favorites">("want_to_read");
   const [allBooks, setAllBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
+  const [onlyLoansFilter, setOnlyLoansFilter] = useState(false);
 
   const {
     library,
     favorites,
+    loans,
     loadLibrary,
     removeBookStatus,
     toggleFavorite,
+    toggleLoan,
+    isLoan,
     getRating,
   } = useLibraryStore();
 
@@ -59,7 +63,7 @@ export default function BibliotecaPage() {
   const finishedBooks = getBooksForTab("finished");
   const favoriteBooks = allBooks.filter((book) => (favorites || []).includes(book.id));
 
-  const currentList =
+  const currentListRaw =
     activeTab === "want_to_read"
       ? wantToReadBooks
       : activeTab === "reading"
@@ -67,6 +71,12 @@ export default function BibliotecaPage() {
       : activeTab === "finished"
       ? finishedBooks
       : favoriteBooks;
+
+  const currentList = onlyLoansFilter
+    ? currentListRaw.filter((book) => (loans || []).includes(book.id))
+    : currentListRaw;
+
+  const currentTabLoansCount = currentListRaw.filter((book) => (loans || []).includes(book.id)).length;
 
   const tabLabels = [
     {
@@ -145,6 +155,36 @@ export default function BibliotecaPage() {
             );
           })}
         </div>
+
+        {/* Loan Filter Chips (HITO 5, Punto 35) */}
+        {currentListRaw.length > 0 && (
+          <div className="flex items-center gap-2 mt-3 text-xs">
+            <span className="text-[11px] font-bold text-slate-400">Filtrar:</span>
+            <button
+              type="button"
+              onClick={() => setOnlyLoansFilter(false)}
+              className={`px-3 py-1 rounded-full font-bold transition-all ${
+                !onlyLoansFilter
+                  ? "bg-[#26245C] text-white shadow-sm"
+                  : "bg-white text-slate-500 border border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              Todos ({currentListRaw.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setOnlyLoansFilter(true)}
+              className={`px-3 py-1 rounded-full font-bold flex items-center gap-1.5 transition-all ${
+                onlyLoansFilter
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "bg-white text-emerald-700 border border-emerald-200 hover:bg-emerald-50"
+              }`}
+            >
+              <LibraryIcon size={12} />
+              <span>En préstamo de biblioteca ({currentTabLoansCount})</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* List content */}
@@ -154,29 +194,52 @@ export default function BibliotecaPage() {
             <div className="w-14 h-14 mx-auto bg-[#ECEEFC] text-[#474AB6] rounded-2xl flex items-center justify-center">
               <LibraryIcon size={28} />
             </div>
-            <h3 className="text-sm font-black text-[#26245C]">
-              No tienes libros en &ldquo;{tabLabels.find((t) => t.id === activeTab)?.label}&rdquo;
-            </h3>
-            <p className="text-xs text-slate-500 max-w-xs mx-auto">
-              Descubre libros físicos recomendados y guárdalos para leer en papel o pedir en tu biblioteca.
-            </p>
-            <Link
-              href="/descubre"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#4F46E5] text-white text-xs font-bold shadow-magical hover:bg-indigo-700 transition-colors"
-            >
-              <span>Explorar recomendaciones</span>
-              <ArrowRight size={14} />
-            </Link>
+            {onlyLoansFilter ? (
+              <>
+                <h3 className="text-sm font-black text-[#26245C]">
+                  No tienes libros marcados en préstamo en &ldquo;{tabLabels.find((t) => t.id === activeTab)?.label}&rdquo;
+                </h3>
+                <p className="text-xs text-slate-500 max-w-xs mx-auto">
+                  Puedes marcar cualquier libro con el icono de biblioteca cuando lo pidas prestado en tu biblioteca pública.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setOnlyLoansFilter(false)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition-colors"
+                >
+                  Ver todos los libros de esta sección
+                </button>
+              </>
+            ) : (
+              <>
+                <h3 className="text-sm font-black text-[#26245C]">
+                  No tienes libros en &ldquo;{tabLabels.find((t) => t.id === activeTab)?.label}&rdquo;
+                </h3>
+                <p className="text-xs text-slate-500 max-w-xs mx-auto">
+                  Descubre libros físicos recomendados y guárdalos para leer en papel o pedir en tu biblioteca.
+                </p>
+                <Link
+                  href="/descubre"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#4F46E5] text-white text-xs font-bold shadow-magical hover:bg-indigo-700 transition-colors"
+                >
+                  <span>Explorar recomendaciones</span>
+                  <ArrowRight size={14} />
+                </Link>
+              </>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {currentList.map((book) => {
               const rating = getRating(book.id);
+              const isBorrowed = isLoan(book.id);
 
               return (
                 <div
                   key={book.id}
-                  className="alea-card p-3.5 flex items-center justify-between gap-3.5 hover:border-indigo-300 transition-all"
+                  className={`alea-card p-3.5 flex items-center justify-between gap-3.5 hover:border-indigo-300 transition-all ${
+                    isBorrowed ? "border-emerald-200 bg-gradient-to-r from-emerald-50/30 to-white" : ""
+                  }`}
                 >
                   <Link
                     href={`/book/${book.id}`}
@@ -190,10 +253,16 @@ export default function BibliotecaPage() {
                       size="sm"
                     />
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1.5 mb-1">
+                      <div className="flex flex-wrap items-center gap-1.5 mb-1">
                         <span className="text-[10px] font-bold text-[#4345B5] bg-[#ECEEFC] px-2 py-0.5 rounded-md inline-block">
                           {book.audienceAge} años
                         </span>
+                        {isBorrowed && (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-800 bg-emerald-100/90 px-2 py-0.5 rounded-md border border-emerald-200">
+                            <LibraryIcon size={10} />
+                            <span>En préstamo</span>
+                          </span>
+                        )}
                         {rating && (
                           <div className="flex items-center text-amber-500 text-[10px] font-bold bg-amber-50 px-1.5 py-0.5 rounded-md border border-amber-200">
                             <Star size={10} className="fill-amber-400 mr-0.5" />
@@ -214,6 +283,20 @@ export default function BibliotecaPage() {
                   </Link>
 
                   <div className="flex flex-col gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => toggleLoan(book.id)}
+                      className={`p-2 rounded-xl transition-colors ${
+                        isBorrowed
+                          ? "text-emerald-700 bg-emerald-100/80 hover:bg-emerald-200"
+                          : "text-slate-400 hover:text-emerald-600 hover:bg-emerald-50"
+                      }`}
+                      title={isBorrowed ? "Marcar como devuelto a la biblioteca" : "Marcar como préstamo de biblioteca pública"}
+                      aria-label={isBorrowed ? "Marcar como devuelto" : "Marcar como préstamo"}
+                    >
+                      <LibraryIcon size={16} />
+                    </button>
+
                     <Link
                       href={`/book/${book.id}`}
                       className="p-2 rounded-xl text-indigo-600 hover:bg-indigo-50 transition-colors"

@@ -64,6 +64,8 @@ export default function BookDetailPage({ params }: PageProps) {
     getBookStatus,
     toggleFavorite,
     isFavorite,
+    toggleLoan,
+    isLoan,
     setRating,
     getRating,
   } = useLibraryStore();
@@ -144,6 +146,7 @@ export default function BookDetailPage({ params }: PageProps) {
 
   const currentStatus = getBookStatus(book.id);
   const bookIsFavorite = isFavorite(book.id);
+  const bookIsLoan = isLoan(book.id);
   const existingRating = getRating(book.id);
   const recommendationReason = getBookRecommendationReason(book, userProfile);
 
@@ -323,6 +326,42 @@ export default function BookDetailPage({ params }: PageProps) {
           </div>
         </div>
 
+        {/* Loan toggle (HITO 5, Punto 35) */}
+        <div className="w-full max-w-sm">
+          <button
+            type="button"
+            onClick={() => {
+              sounds.playPop();
+              toggleLoan(book.id);
+            }}
+            className={`w-full py-2.5 px-3.5 rounded-2xl text-xs font-bold flex items-center justify-between border transition-all ${
+              bookIsLoan
+                ? "bg-emerald-50 border-emerald-300 text-emerald-800 shadow-sm"
+                : "bg-white border-indigo-100/80 text-slate-600 hover:border-emerald-200 hover:bg-emerald-50/30"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-6 h-6 rounded-lg flex items-center justify-center ${
+                  bookIsLoan ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-500"
+                }`}
+              >
+                <Library size={13} />
+              </div>
+              <span className="text-left font-bold">
+                {bookIsLoan ? "En préstamo de biblioteca pública" : "¿Prestado de la biblioteca?"}
+              </span>
+            </div>
+            <span
+              className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                bookIsLoan ? "bg-emerald-200/80 text-emerald-900" : "bg-slate-100 text-slate-500"
+              }`}
+            >
+              {bookIsLoan ? "Activo" : "Marcar"}
+            </span>
+          </button>
+        </div>
+
         {/* Valoración / Review card when Read or Rated (HITO 4, Bug #5) */}
         {(currentStatus === "finished" || existingRating) && (
           <div className="w-full max-w-sm pt-2">
@@ -450,14 +489,21 @@ export default function BookDetailPage({ params }: PageProps) {
                   </p>
                 </div>
 
-                {/* Stars selector */}
-                <div className="flex items-center justify-center gap-2 py-2">
+                {/* Stars selector (Accesible WCAG 2.1 AA) */}
+                <div
+                  role="radiogroup"
+                  aria-label="Puntuación con estrellas para este libro"
+                  className="flex items-center justify-center gap-2 py-2"
+                >
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       type="button"
+                      role="radio"
+                      aria-checked={selectedStars === star}
+                      aria-label={`Valorar con ${star} de 5 estrellas`}
                       onClick={() => setSelectedStars(star)}
-                      className="p-1 hover:scale-125 transition-transform"
+                      className="p-1.5 rounded-full hover:scale-125 focus:outline-none focus:ring-2 focus:ring-amber-400 transition-all"
                     >
                       <Star
                         size={28}

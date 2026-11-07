@@ -163,7 +163,9 @@ export default function ExploraPage() {
       {/* Book Grid */}
       <div className="space-y-3">
         <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
-          <span>{filteredBooks.length} libros encontrados</span>
+          <span>
+            {filteredBooks.length} {filteredBooks.length === 1 ? "libro encontrado" : "libros encontrados"}
+          </span>
           {(selectedAge !== "todos" || selectedTag !== "todos" || searchQuery) && (
             <button
               onClick={() => {

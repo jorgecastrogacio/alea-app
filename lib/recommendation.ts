@@ -78,6 +78,12 @@ function isAgeInRange(userAgeStr: string, rangeStr: string): boolean {
   return true;
 }
 
+function formatGusta(text: string): string {
+  const trimmed = text.trim();
+  const isPlural = /^(los|las|cómics|historias|libros|novelas|planetas|lugares|castillos|bosques|islas|mundos)\b/i.test(trimmed);
+  return isPlural ? `porque te gustan ${trimmed}` : `porque te gusta ${trimmed}`;
+}
+
 /**
  * Formatea en lenguaje natural el motivo por el cual un libro encaja con el perfil.
  */
@@ -91,11 +97,11 @@ export function buildNaturalReason(
     const qualityTag = matchedTags[1];
     const prefText = TAG_NATURAL_PREF[prefTag] || prefTag.toLowerCase();
     const qualityText = TAG_NATURAL_QUALITY[qualityTag] || qualityTag.toLowerCase();
-    return `Te lo recomendamos porque te gusta ${prefText} y esta historia destaca por ${qualityText}.`;
+    return `Te lo recomendamos ${formatGusta(prefText)} y esta historia destaca por ${qualityText}.`;
   } else if (matchedTags.length === 1) {
     const prefTag = matchedTags[0];
     const prefText = TAG_NATURAL_PREF[prefTag] || prefTag.toLowerCase();
-    return `Te lo recomendamos porque te gusta ${prefText} y encaja genial con tus ${userAge} años.`;
+    return `Te lo recomendamos ${formatGusta(prefText)} y encaja genial con tus ${userAge} años.`;
   } else if (ageMatch) {
     return `Una historia ideal seleccionada por libreros para lectores de ${userAge} años con ganas de una gran lectura física.`;
   }
@@ -198,6 +204,36 @@ export function getRecommendedBooks(
         }
       });
     }
+
+    // 5. Influencia Real de Valoraciones Anteriores (HITO 4, Punto 29)
+    let savedRatings: Record<string, { stars: number; likedTags?: string[] }> = {};
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem("alea_ratings");
+        if (raw) savedRatings = JSON.parse(raw);
+      } catch {}
+    }
+
+    const existingRating = savedRatings[book.id];
+    if (existingRating) {
+      if (existingRating.stars >= 4) {
+        score += 2; // Refuerzo de afinidad
+      } else if (existingRating.stars <= 2) {
+        score -= 4; // Penaliza libros no disfrutados
+      }
+    }
+
+    // Bonificación por coincidencia con etiquetas destacadas en libros de 4 y 5 estrellas
+    Object.entries(savedRatings).forEach(([ratedId, rating]) => {
+      if (ratedId !== book.id && rating.stars >= 4 && rating.likedTags) {
+        rating.likedTags.forEach((likedTag) => {
+          if (book.tags.includes(likedTag)) {
+            score += 1;
+            if (!matchedTags.includes(likedTag)) matchedTags.push(likedTag);
+          }
+        });
+      }
+    });
 
     const reason = buildNaturalReason(matchedTags, activeProfile.age, ageMatch);
 

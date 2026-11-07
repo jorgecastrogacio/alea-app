@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { UserProfile, useOnboardingStore } from "@/store/useOnboardingStore";
 import { useLibraryStore } from "@/store/useLibraryStore";
@@ -17,6 +18,7 @@ import {
   Trophy,
   PenLine,
   Compass,
+  Trash2,
 } from "lucide-react";
 
 const WORLD_ICONS: Record<string, string> = {
@@ -74,16 +76,23 @@ export default function UniversoPage() {
   const finishedCount = Object.values(library).filter((v) => v === "finished").length;
   const favoritesCount = (favorites || []).length;
 
-  const handleResetProfile = () => {
-    if (confirm("¿Quieres repetir el cuestionario para recalibrar tus preferencias de lectura?")) {
-      resetOnboarding();
-      router.push("/onboarding");
-    }
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [showClearModal, setShowClearModal] = useState(false);
+
+  const handleConfirmReset = () => {
+    resetOnboarding();
+    setShowResetModal(false);
+    router.push("/onboarding");
   };
 
-  const handleClearAll = () => {
-    if (confirm("¿Quieres reiniciar todos los datos de ALEA en este navegador?")) {
+  const handleConfirmClear = () => {
+    try {
       localStorage.clear();
+      resetOnboarding();
+      useLibraryStore.getState().clearLibrary();
+      setShowClearModal(false);
+      window.location.href = "/onboarding";
+    } catch {
       window.location.href = "/onboarding";
     }
   };
@@ -119,14 +128,24 @@ export default function UniversoPage() {
           </h1>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setShowPreferencesModal(true)}
-          className="flex items-center gap-1.5 text-xs font-bold text-white bg-[#4F46E5] hover:bg-indigo-700 px-3.5 py-2 rounded-full transition-all shadow-magical"
-        >
-          <PenLine size={14} />
-          <span>Editar gustos</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/familia"
+            className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-full transition-all shadow-sm"
+          >
+            <Shield size={14} className="text-emerald-600" />
+            <span>Área Familia</span>
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => setShowPreferencesModal(true)}
+            className="flex items-center gap-1.5 text-xs font-bold text-white bg-[#4F46E5] hover:bg-indigo-700 px-3.5 py-2 rounded-full transition-all shadow-magical"
+          >
+            <PenLine size={14} />
+            <span>Editar gustos</span>
+          </button>
+        </div>
       </div>
 
       {/* User & Mascot Hero Card */}
@@ -355,7 +374,7 @@ export default function UniversoPage() {
       <div className="pt-2 space-y-2">
         <button
           type="button"
-          onClick={handleResetProfile}
+          onClick={() => setShowResetModal(true)}
           className="w-full py-3 px-4 rounded-full border border-indigo-200 bg-white hover:bg-indigo-50/50 text-[#343788] font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-sm"
         >
           <RotateCcw size={14} />
@@ -364,7 +383,7 @@ export default function UniversoPage() {
 
         <button
           type="button"
-          onClick={handleClearAll}
+          onClick={() => setShowClearModal(true)}
           className="w-full py-2.5 px-4 rounded-full text-rose-500 hover:bg-rose-50 font-bold text-[11px] transition-colors"
         >
           Borrar datos locales de este dispositivo
@@ -377,6 +396,76 @@ export default function UniversoPage() {
         onClose={() => setShowPreferencesModal(false)}
         onSaved={loadData}
       />
+
+      {/* MODAL 1: RECALIBRAR CUESTIONARIO */}
+      {showResetModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl border border-indigo-100 animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
+              <RotateCcw size={22} />
+            </div>
+            <div className="text-center space-y-1">
+              <h3 className="text-base font-black text-[#26245C]">
+                ¿Recalibrar gustos lectores?
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Volverás a realizar las preguntas de mundos y temas. <strong>Tus libros guardados en la estantería y tus valoraciones NO se borrarán.</strong>
+              </p>
+            </div>
+            <div className="flex gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowResetModal(false)}
+                className="flex-1 py-2.5 rounded-full border border-slate-200 font-bold text-xs text-slate-600 hover:bg-slate-50"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmReset}
+                className="flex-1 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 font-bold text-xs text-white shadow-magical"
+              >
+                Sí, recalibrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: BORRAR TODO */}
+      {showClearModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl border border-rose-100 animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto">
+              <Trash2 size={22} />
+            </div>
+            <div className="text-center space-y-1">
+              <h3 className="text-base font-black text-[#26245C]">
+                ¿Restablecer ALEA por completo?
+              </h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Esta acción eliminará todos los libros de la estantería, las opiniones y el perfil en este navegador. Volverás al inicio como usuario nuevo.
+              </p>
+            </div>
+            <div className="flex gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowClearModal(false)}
+                className="flex-1 py-2.5 rounded-full border border-slate-200 font-bold text-xs text-slate-600 hover:bg-slate-50"
+              >
+                Volver atrás
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmClear}
+                className="flex-1 py-2.5 rounded-full bg-rose-600 hover:bg-rose-700 font-bold text-xs text-white shadow-sm"
+              >
+                Borrar todo
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
