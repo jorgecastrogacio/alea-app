@@ -16,41 +16,33 @@ export const SPANISH_LIBRARY_NETWORKS: Record<string, AutonomousCommunityCatalog
     id: "madrid",
     name: "Comunidad de Madrid",
     networkName: "Red de Bibliotecas Públicas de la Comunidad de Madrid",
-    opacUrlBuilder: (isbn: string) =>
-      `https://gestiona3.madrid.org/bibpub_opac/abnetcl.cgi?ACC=101&PARAM1=${encodeURIComponent(
-        isbn.replace(/[-\s]/g, "")
-      )}&PARAM2=ISB`,
-    notes: "AbsysNet oficial de Madrid. Búsqueda directa por ISBN-13.",
+    opacUrlBuilder: () =>
+      "https://gestiona.comunidad.madrid/biblio_publicas/cgi-bin/abnetopac",
+    notes: "Catálogo oficial AbsysNet de la Comunidad de Madrid.",
   },
   catalunya: {
     id: "catalunya",
     name: "Cataluña / Catalunya",
     networkName: "Catàleg Atena (Biblioteques Públiques de Catalunya)",
-    opacUrlBuilder: (isbn: string) =>
-      `https://atena.biblioteques.cat/search*cat/?searchtype=i&searcharg=${encodeURIComponent(
-        isbn.replace(/[-\s]/g, "")
-      )}`,
-    notes: "Catàleg col·lectiu Atena de la Generalitat de Catalunya.",
+    opacUrlBuilder: () =>
+      "https://atena.biblioteques.cat/",
+    notes: "Catálogo colectivo Atena de la Generalitat de Catalunya.",
   },
   andalucia: {
     id: "andalucia",
     name: "Andalucía",
-    networkName: "Red de Bibliotecas Públicas de Andalucía",
-    opacUrlBuilder: (isbn: string) =>
-      `https://www.juntadeandalucia.es/cultura/absys/abnet_opac/abnetcl.exe?ACC=101&PARAM1=${encodeURIComponent(
-        isbn.replace(/[-\s]/g, "")
-      )}&PARAM2=ISB`,
+    networkName: "Red de Bibliotecas Públicas de Andalucía (RBPA)",
+    opacUrlBuilder: () =>
+      "https://www.juntadeandalucia.es/cultura/rbpa/",
     notes: "Red de Lectura Pública de Andalucía (Junta de Andalucía).",
   },
   valencia: {
     id: "valencia",
     name: "Comunitat Valenciana",
-    networkName: "Xarxa de Lectura Pública Valenciana",
-    opacUrlBuilder: (isbn: string) =>
-      `https://xlpv.gva.es/absysnet/abnetcl.cgi?ACC=101&PARAM1=${encodeURIComponent(
-        isbn.replace(/[-\s]/g, "")
-      )}&PARAM2=ISB`,
-    notes: "Catálogo XLPV de la Generalitat Valenciana.",
+    networkName: "Xarxa de Lectura Pública Valenciana (eXLPV)",
+    opacUrlBuilder: () =>
+      "https://xlpv.gva.es/cginet-bin/abnetop",
+    notes: "Catálogo oficial de la Generalitat Valenciana.",
   },
   galicia: {
     id: "galicia",
@@ -60,27 +52,23 @@ export const SPANISH_LIBRARY_NETWORKS: Record<string, AutonomousCommunityCatalog
       `https://catalogo-rbgalicia.xunta.gal/cgi-bin/koha/opac-search.pl?q=${encodeURIComponent(
         isbn.replace(/[-\s]/g, "")
       )}`,
-    notes: "Catálogo Koha da Rede de Bibliotecas de Galicia.",
+    notes: "Catálogo Koha da Rede de Bibliotecas de Galicia con búsqueda directa por ISBN.",
   },
   euskadi: {
     id: "euskadi",
     name: "Euskadi / País Vasco",
     networkName: "Red de Lectura Pública de Euskadi (RLPE)",
-    opacUrlBuilder: (isbn: string) =>
-      `https://www.liburutegiak.euskadi.eus/katalogobateratua/abnetcl.cgi?ACC=101&PARAM1=${encodeURIComponent(
-        isbn.replace(/[-\s]/g, "")
-      )}&PARAM2=ISB`,
-    notes: "Katalogo bateratua Euskadiko Irakurketa Publikoko Sarea.",
+    opacUrlBuilder: () =>
+      "https://www.liburutegiak.euskadi.eus/",
+    notes: "Portal oficial de la Red de Lectura Pública de Euskadi.",
   },
   nacional_ccb: {
     id: "nacional_ccb",
-    name: "Toda España (Catálogo Colectivo Nacional)",
-    networkName: "Consejo de Cooperación Bibliotecaria (Ministerio de Cultura)",
-    opacUrlBuilder: (isbn: string) =>
-      `https://catalogos.mecd.es/CCB/cgi-bin/abnetcl?ACC=101&PARAM1=${encodeURIComponent(
-        isbn.replace(/[-\s]/g, "")
-      )}&PARAM2=ISB`,
-    notes: "Catálogo Nacional unificado CCB del Estado español.",
+    name: "Toda España (Catálogo Nacional CCBIP)",
+    networkName: "Catálogo Colectivo de Bibliotecas Públicas (Ministerio de Cultura)",
+    opacUrlBuilder: () =>
+      "https://catalogos.cultura.gob.es/CCBIP/ccbipopac/",
+    notes: "Catálogo Colectivo oficial del Ministerio de Cultura del Estado español.",
   },
 };
 

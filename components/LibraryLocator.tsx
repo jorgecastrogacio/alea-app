@@ -67,11 +67,41 @@ export function LibraryLocator({
   };
 
   const handleCopyIsbn = () => {
-    if (typeof navigator !== "undefined") {
-      navigator.clipboard.writeText(book.isbn);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2200);
+    try {
+      if (typeof navigator !== "undefined" && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(book.isbn)
+          .then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2400);
+          })
+          .catch(() => fallbackCopy());
+      } else {
+        fallbackCopy();
+      }
+    } catch {
+      fallbackCopy();
     }
+  };
+
+  const fallbackCopy = () => {
+    try {
+      const textarea = document.createElement("textarea");
+      textarea.value = book.isbn;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2400);
+    } catch (e) {
+      console.warn("No se pudo copiar el ISBN al portapapeles:", e);
+    }
+  };
+
+  const handleOpenCatalog = () => {
+    handleCopyIsbn();
   };
 
   const catalogUrl = getLibraryCatalogUrl(selectedRegion, book.isbn, book.title);
@@ -97,10 +127,10 @@ export function LibraryLocator({
           </div>
           <div className="pr-6">
             <h3 className="text-base font-black text-[#26245C] leading-snug">
-              Encuentra este libro físico
+              Pedir en tu Biblioteca Pública
             </h3>
             <p className="text-xs text-slate-500 font-medium">
-              Préstamo 100% gratuito en tu red de bibliotecas públicas
+              Consulta de disponibilidad y préstamo gratuito en tu red pública
             </p>
           </div>
         </div>
@@ -127,7 +157,7 @@ export function LibraryLocator({
             ))}
           </select>
           <p className="text-[10px] text-slate-500 leading-tight">
-            Se guarda en este dispositivo sin rastreo ni geolocalización invasiva.
+            Preferencia guardada en tu navegador (100% privado, sin geolocalización invasiva).
           </p>
         </div>
 
@@ -137,15 +167,16 @@ export function LibraryLocator({
             href={catalogUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={handleOpenCatalog}
             className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[#4F46E5] to-[#6366F1] hover:from-[#4338CA] hover:to-[#4F46E5] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-magical transition-all active:scale-[0.98]"
           >
             <BookOpen size={16} />
-            <span>Buscar en {activeNetwork.name}</span>
+            <span>Consultar catálogo oficial ({activeNetwork.name})</span>
             <ExternalLink size={14} className="opacity-80" />
           </a>
 
-          <p className="text-[11px] text-center text-slate-500 font-medium">
-            Abre la búsqueda oficial por ISBN en {activeNetwork.networkName}
+          <p className="text-[11px] text-center text-slate-500 font-medium leading-relaxed">
+            Abre {activeNetwork.networkName}. Al hacer clic se copia el ISBN <strong className="text-indigo-700 font-mono">{book.isbn}</strong> al portapapeles para pegarlo en el buscador.
           </p>
         </div>
 
