@@ -1,0 +1,454 @@
+[
+  {
+    "id": "alea-matilda",
+    "isbn": "9788420482811",
+    "title": "Matilda",
+    "author": "Roald Dahl",
+    "editorial": "Alfaguara Infantil",
+    "edition": "1ª Edición Coleccionista, 2023",
+    "year": 2023,
+    "pages": 248,
+    "language": "Castellano",
+    "audienceAge": "8-12",
+    "targetAge": {
+      "min": 8,
+      "max": 12,
+      "recommended": 10
+    },
+    "difficulty": "Media",
+    "coverUrl": "/assets/books/matilda.jpg",
+    "coverWebp": "/assets/books/alea-matilda.webp",
+    "color": "#eab308",
+    "tags": [
+      "Lugares como el nuestro",
+      "Reírme muchísimo",
+      "Niños y niñas como yo",
+      "Libros con muchas ilustraciones",
+      "¡Que pasen cosas!"
+    ],
+    "synopsis": "Matilda es una lectora voraz con una mente prodigiosa y un poder secreto extraordinario. Con su ingenio y la ayuda de la señorita Honey, se enfrentará a la temible directora Trunchbull.",
+    "verifiedSource": "MCU_LIBROS"
+  },
+  {
+    "id": "alea-wonder",
+    "isbn": "9788415594024",
+    "title": "Wonder: La lección de August",
+    "author": "R. J. Palacio",
+    "editorial": "Nube de Tinta",
+    "edition": "12ª Edición Conmemorativa, 2022",
+    "year": 2022,
+    "pages": 416,
+    "language": "Castellano",
+    "audienceAge": "10-15",
+    "targetAge": {
+      "min": 10,
+      "max": 15,
+      "recommended": 11
+    },
+    "difficulty": "Media",
+    "coverUrl": "/assets/books/wonder.jpg",
+    "coverWebp": "/assets/books/alea-wonder.webp",
+    "color": "#38bdf8",
+    "tags": [
+      "Lugares como el nuestro",
+      "Personas normales que viven cosas extraordinarias",
+      "Superar un reto o un peligro",
+      "Historias con capítulos cortos",
+      "Que me atrapen poco a poco."
+    ],
+    "synopsis": "Una historia sobre la amistad, la empatía y el valor de ser diferente. August Pullman nació con una alteración facial y tras años en casa se enfrenta a su primer año en la escuela.",
+    "verifiedSource": "MCU_LIBROS"
+  },
+  {
+    "id": "alea-principito",
+    "isbn": "9788498381498",
+    "title": "El Principito",
+    "author": "Antoine de Saint-Exupéry",
+    "editorial": "Salamandra",
+    "edition": "Edición Conmemorativa Ilustrada, 2023",
+    "year": 2023,
+    "pages": 112,
+    "language": "Castellano",
+    "audienceAge": "7-16",
+    "targetAge": {
+      "min": 7,
+      "max": 16,
+      "recommended": 9
+    },
+    "difficulty": "Fácil",
+    "coverUrl": "/assets/books/el_principito.jpg",
+    "coverWebp": "/assets/books/alea-principito.webp",
+    "color": "#60a5fa",
+    "tags": [
+      "Planetas y galaxias",
+      "Conocer personajes extraordinarios",
+      "Libros con muchas ilustraciones",
+      "Que me atrapen poco a poco."
+    ],
+    "synopsis": "Un clásico lleno de preguntas importantes sobre la amistad, el amor y el valor de lo invisible a los ojos mientras recorremos asteroides lejanos y conocemos a una rosa única.",
+    "verifiedSource": "BNE_DATOS"
+  },
+  {
+    "id": "alea-harry-potter",
+    "isbn": "9788478884452",
+    "title": "Harry Potter y la piedra filosofal",
+    "author": "J. K. Rowling",
+    "editorial": "Salamandra",
+    "edition": "25º Aniversario, 2023",
+    "year": 2023,
+    "pages": 256,
+    "language": "Castellano",
+    "audienceAge": "9-14",
+    "targetAge": {
+      "min": 9,
+      "max": 14,
+      "recommended": 11
+    },
+    "difficulty": "Media",
+    "coverUrl": "/assets/books/harry_potter.jpg",
+    "coverWebp": "/assets/books/alea-harry-potter.webp",
+    "color": "#1e3a8a",
+    "tags": [
+      "Castillos y secretos",
+      "Vivir una gran aventura",
+      "Seres fantásticos",
+      "Novelas largas",
+      "¡Que pasen cosas!"
+    ],
+    "synopsis": "Harry descubre en su undécimo cumpleaños que es mago y es invitado al Colegio Hogwarts. Allí descubrirá amigos para siempre, criaturas legendarias y el misterio de la piedra filosofal.",
+    "verifiedSource": "BNE_DATOS"
+  },
+  {
+    "id": "alea-tintin",
+    "isbn": "9788426101181",
+    "title": "Las aventuras de Tintín: El secreto del Unicornio",
+    "author": "Hergé",
+    "editorial": "Juventud",
+    "edition": "Edición Clásica en Cartoné, 2021",
+    "year": 2021,
+    "pages": 64,
+    "language": "Castellano",
+    "audienceAge": "8-14",
+    "targetAge": {
+      "min": 8,
+      "max": 14,
+      "recommended": 10
+    },
+    "difficulty": "Fácil",
+    "coverUrl": "/assets/books/tintin.jpg",
+    "coverWebp": "/assets/books/alea-tintin.webp",
+    "color": "#e0f2fe",
+    "tags": [
+      "Islas y aventuras",
+      "Mundos submarinos",
+      "Detectives y exploradores",
+      "Resolver un misterio",
+      "Cómics y novelas gráficas",
+      "¡Que pasen cosas!"
+    ],
+    "synopsis": "Tintín y su fiel Milú compran un galeón en miniatura en el mercado viejo que esconde el misterioso mapa del tesoro de Rackham el Rojo. Una búsqueda trepidante en mar y tierra.",
+    "verifiedSource": "MCU_LIBROS"
+  },
+  {
+    "id": "alea-greg",
+    "isbn": "9788498672220",
+    "title": "El diario de Greg: Un pringao total",
+    "author": "Jeff Kinney",
+    "editorial": "RBA Molino",
+    "edition": "8ª Reimpresión Oficial, 2023",
+    "year": 2023,
+    "pages": 224,
+    "language": "Castellano",
+    "audienceAge": "9-13",
+    "targetAge": {
+      "min": 9,
+      "max": 13,
+      "recommended": 10
+    },
+    "difficulty": "Fácil",
+    "coverUrl": "/assets/books/greg.jpg",
+    "coverWebp": "/assets/books/alea-greg.webp",
+    "color": "#f8fafc",
+    "tags": [
+      "Lugares como el nuestro",
+      "Reírme muchísimo",
+      "Niños y niñas como yo",
+      "Libros con muchas ilustraciones",
+      "Historias con capítulos cortos",
+      "¡Que pasen cosas!"
+    ],
+    "synopsis": "Greg Heffley empieza la escuela secundaria y decide plasmar en su diario ilustrado sus divertidísimos y caóticos intentos por sobrevivir y encajar entre chicos más grandes.",
+    "verifiedSource": "MCU_LIBROS"
+  },
+  {
+    "id": "alea-invisible",
+    "isbn": "9788416588435",
+    "title": "Invisible",
+    "author": "Eloy Moreno",
+    "editorial": "Nube de Tinta",
+    "edition": "Edición Especial Escolar, 2023",
+    "year": 2023,
+    "pages": 304,
+    "language": "Castellano",
+    "audienceAge": "12-16",
+    "targetAge": {
+      "min": 12,
+      "max": 16,
+      "recommended": 13
+    },
+    "difficulty": "Media",
+    "coverUrl": "/assets/books/wonder.jpg",
+    "coverWebp": "/assets/books/alea-invisible.webp",
+    "color": "#0284c7",
+    "tags": [
+      "Lugares como el nuestro",
+      "Personas normales que viven cosas extraordinarias",
+      "Superar un reto o un peligro",
+      "Que me atrapen poco a poco.",
+      "Novelas largas"
+    ],
+    "synopsis": "Una novela inolvidable sobre un chico que creía poseer el poder de volverse invisible y el coraje de mirar de verdad a quienes nos rodean.",
+    "verifiedSource": "MCU_LIBROS"
+  },
+  {
+    "id": "alea-futbolisimos",
+    "isbn": "9788467554908",
+    "title": "Los Futbolísimos: El misterio de los árbitros dormidos",
+    "author": "Roberto Santiago",
+    "editorial": "SM",
+    "edition": "14ª Edición Ilustrada, 2022",
+    "year": 2022,
+    "pages": 288,
+    "language": "Castellano",
+    "audienceAge": "8-11",
+    "targetAge": {
+      "min": 8,
+      "max": 11,
+      "recommended": 9
+    },
+    "difficulty": "Fácil",
+    "coverUrl": "/assets/books/matilda.jpg",
+    "coverWebp": "/assets/books/alea-futbolisimos.webp",
+    "color": "#16a34a",
+    "tags": [
+      "Lugares como el nuestro",
+      "Grupos de amigos",
+      "Resolver un misterio",
+      "Reírme muchísimo",
+      "Libros con muchas ilustraciones",
+      "¡Que pasen cosas!"
+    ],
+    "synopsis": "El equipo Soto Alto está a punto de descender pero los árbitros se quedan dormidos misteriosamente. ¡Un pacto secreto entre amigos resolverá el enigma!",
+    "verifiedSource": "MCU_LIBROS"
+  },
+  {
+    "id": "alea-amanda-black",
+    "isbn": "9788417922719",
+    "title": "Amanda Black: Una herencia peligrosa",
+    "author": "Juan Gómez-Jurado y Bárbara Montes",
+    "editorial": "B de Blok",
+    "edition": "4ª Edición Ilustrada, 2023",
+    "year": 2023,
+    "pages": 240,
+    "language": "Castellano",
+    "audienceAge": "9-13",
+    "targetAge": {
+      "min": 9,
+      "max": 13,
+      "recommended": 11
+    },
+    "difficulty": "Media",
+    "coverUrl": "/assets/books/tintin.jpg",
+    "coverWebp": "/assets/books/alea-amanda-black.webp",
+    "color": "#4c1d95",
+    "tags": [
+      "Castillos y secretos",
+      "Detectives y exploradores",
+      "Encontrar algo inesperado",
+      "Vivir una gran aventura",
+      "¡Que pasen cosas!"
+    ],
+    "synopsis": "El día de su decimotercer cumpleaños, Amanda Black recibe una carta que la convierte en heredera de una mansión misteriosa y de una misión secreta.",
+    "verifiedSource": "MCU_LIBROS"
+  },
+  {
+    "id": "alea-monstruos",
+    "isbn": "9788496388802",
+    "title": "Donde habitan los monstruos",
+    "author": "Maurice Sendak",
+    "editorial": "Kalandraka",
+    "edition": "Edición Especial Ilustrada, 2021",
+    "year": 2021,
+    "pages": 48,
+    "language": "Castellano",
+    "audienceAge": "7-9",
+    "targetAge": {
+      "min": 7,
+      "max": 9,
+      "recommended": 7
+    },
+    "difficulty": "Fácil",
+    "coverUrl": "/assets/books/el_principito.jpg",
+    "coverWebp": "/assets/books/alea-monstruos.webp",
+    "color": "#15803d",
+    "tags": [
+      "Bosques encantados",
+      "Islas y aventuras",
+      "Animales con personalidad",
+      "Seres fantásticos",
+      "Libros con muchas ilustraciones"
+    ],
+    "synopsis": "Un viaje memorable al bosque encantado de los monstruos salvajes para descubrir que el hogar y el afecto siempre están esperándonos.",
+    "verifiedSource": "BNE_DATOS"
+  },
+  {
+    "id": "alea-finis-mundi",
+    "isbn": "9788467577570",
+    "title": "Finis Mundi",
+    "author": "Laura Gallego",
+    "editorial": "SM",
+    "edition": "18ª Edición Premio El Barco de Vapor, 2023",
+    "year": 2023,
+    "pages": 256,
+    "language": "Castellano",
+    "audienceAge": "12-16",
+    "targetAge": {
+      "min": 12,
+      "max": 16,
+      "recommended": 13
+    },
+    "difficulty": "Avanzada",
+    "coverUrl": "/assets/books/harry_potter.jpg",
+    "coverWebp": "/assets/books/alea-finis-mundi.webp",
+    "color": "#854d0e",
+    "tags": [
+      "Castillos y secretos",
+      "Bosques encantados",
+      "Vivir una gran aventura",
+      "Que me atrapen poco a poco.",
+      "Novelas largas"
+    ],
+    "synopsis": "Año 997. Para evitar el fin del mundo, Michel y Mattius recorren Europa en busca de los tres Ejes del Tiempo en un viaje lleno de sabiduría y leyendas.",
+    "verifiedSource": "MCU_LIBROS"
+  },
+  {
+    "id": "alea-idhun",
+    "isbn": "9788467502695",
+    "title": "Memorias de Idhún I: La Resistencia",
+    "author": "Laura Gallego",
+    "editorial": "SM",
+    "edition": "Edición Coleccionista, 2022",
+    "year": 2022,
+    "pages": 560,
+    "language": "Castellano",
+    "audienceAge": "13-16",
+    "targetAge": {
+      "min": 13,
+      "max": 16,
+      "recommended": 14
+    },
+    "difficulty": "Avanzada",
+    "coverUrl": "/assets/books/harry_potter.jpg",
+    "coverWebp": "/assets/books/alea-idhun.webp",
+    "color": "#9333ea",
+    "tags": [
+      "Bosques encantados",
+      "Castillos y secretos",
+      "Seres fantásticos",
+      "Vivir una gran aventura",
+      "Novelas largas",
+      "¡Que pasen cosas!"
+    ],
+    "synopsis": "Jack y Victoria luchan junto a la Resistencia para liberar a Idhún de Ashran el Nigromante y devolver la paz a los dragones y unicornios.",
+    "verifiedSource": "MCU_LIBROS"
+  },
+  {
+    "id": "alea-manolito",
+    "isbn": "9788432215773",
+    "title": "Manolito Gafotas",
+    "author": "Elvira Lindo",
+    "editorial": "Seix Barral",
+    "edition": "Edición 25 Aniversario, 2021",
+    "year": 2021,
+    "pages": 176,
+    "language": "Castellano",
+    "audienceAge": "8-12",
+    "targetAge": {
+      "min": 8,
+      "max": 12,
+      "recommended": 9
+    },
+    "difficulty": "Fácil",
+    "coverUrl": "/assets/books/greg.jpg",
+    "coverWebp": "/assets/books/alea-manolito.webp",
+    "color": "#d97706",
+    "tags": [
+      "Lugares como el nuestro",
+      "Reírme muchísimo",
+      "Niños y niñas como yo",
+      "Historias con capítulos cortos",
+      "Libros con muchas ilustraciones"
+    ],
+    "synopsis": "Divertidísimas vivencias de Manolito en Carabanchel Alto junto a su abuelo Nicolás, el Orejones López y su hermano menor.",
+    "verifiedSource": "MCU_LIBROS"
+  },
+  {
+    "id": "alea-nemo",
+    "isbn": "9788466751711",
+    "title": "Veinte mil leguas de viaje submarino",
+    "author": "Julio Verne",
+    "editorial": "Anaya",
+    "edition": "Edición Clásicos a Medida, 2022",
+    "year": 2022,
+    "pages": 320,
+    "language": "Castellano",
+    "audienceAge": "10-15",
+    "targetAge": {
+      "min": 10,
+      "max": 15,
+      "recommended": 12
+    },
+    "difficulty": "Media",
+    "coverUrl": "/assets/books/tintin.jpg",
+    "coverWebp": "/assets/books/alea-nemo.webp",
+    "color": "#0369a1",
+    "tags": [
+      "Mundos submarinos",
+      "Islas y aventuras",
+      "Vivir una gran aventura",
+      "Novelas largas",
+      "Que me atrapen poco a poco."
+    ],
+    "synopsis": "A bordo del submarino Nautilus comandado por el enigmático Capitán Nemo, tres náufragos recorrerán las profundidades más secretas y maravillosas de los siete mares.",
+    "verifiedSource": "MCU_LIBROS"
+  },
+  {
+    "id": "alea-zapatillas-rojas",
+    "isbn": "9788490430842",
+    "title": "El club de las zapatillas rojas",
+    "author": "Ana Punset",
+    "editorial": "Montena",
+    "edition": "5ª Edición, 2023",
+    "year": 2023,
+    "pages": 224,
+    "language": "Castellano",
+    "audienceAge": "9-13",
+    "targetAge": {
+      "min": 9,
+      "max": 13,
+      "recommended": 10
+    },
+    "difficulty": "Fácil",
+    "coverUrl": "/assets/books/wonder.jpg",
+    "coverWebp": "/assets/books/alea-zapatillas-rojas.webp",
+    "color": "#e11d48",
+    "tags": [
+      "Lugares como el nuestro",
+      "Grupos de amigos",
+      "Niños y niñas como yo",
+      "Historias con capítulos cortos"
+    ],
+    "synopsis": "Cuatro amigas inseparables fundan su club para mantenerse unidas frente a cualquier distancia o reto que traiga la vida.",
+    "verifiedSource": "MCU_LIBROS"
+  }
+]

@@ -109,17 +109,11 @@ export function getBookRecommendationReason(
   book: Book,
   profile: UserProfile | null
 ): string {
-  const activeProfile = profile || {
-    nickname: "Daniela",
-    age: "11",
-    worlds: ["Bosques encantados", "Castillos y secretos"],
-    interests: ["Vivir una gran aventura", "Resolver un misterio"],
-    protagonists: ["Niños y niñas como yo"],
-    rhythm: "¡Que pasen cosas!",
-    formats: ["Me da igual el formato si la historia es buena"],
-    readingHabit: "Lector habitual",
-  };
+  if (profile?.isGuest || !profile?.worlds?.length) {
+    return `Una historia clásica e inolvidable recomendada para explorar nuevos mundos en papel.`;
+  }
 
+  const activeProfile = profile;
   const userPrefTags = [
     ...(activeProfile.worlds || []),
     ...(activeProfile.interests || []),
@@ -145,17 +139,23 @@ export function getRecommendedBooks(
   books: Book[],
   profile: UserProfile | null
 ): ScoredBook[] {
-  const activeProfile: UserProfile = profile || {
-    nickname: "Daniela",
-    mascotName: "Brillo",
-    age: "11",
-    worlds: ["Bosques encantados", "Castillos y secretos", "Lugares como el nuestro"],
-    interests: ["Vivir una gran aventura", "Resolver un misterio"],
-    protagonists: ["Niños y niñas como yo"],
-    rhythm: "¡Que pasen cosas!",
-    formats: ["Me da igual el formato si la historia es buena"],
-    readingHabit: "Lector habitual",
-  };
+  const isGuest = !profile || profile.isGuest || !profile.worlds || profile.worlds.length === 0;
+
+  if (isGuest) {
+    // Modo Explorador Neutral: Libros icónicos equilibrados por edad
+    const guestAge = profile?.age || "10";
+    return books.map((book) => {
+      const ageMatch = isAgeInRange(guestAge, book.audienceAge);
+      return {
+        book,
+        score: ageMatch ? 5 : 2,
+        reason: `Recomendado por libreros para lectores de ${guestAge} años que buscan una gran lectura física.`,
+        matchedTags: book.tags.slice(0, 2),
+      };
+    }).sort((a, b) => b.score - a.score);
+  }
+
+  const activeProfile = profile;
 
   const userPrefTags = [
     ...(activeProfile.worlds || []),

@@ -9,6 +9,7 @@ import { useLibraryStore } from "@/store/useLibraryStore";
 import BookCover from "@/components/BookCover";
 import { BrilloAvatar } from "@/components/BrilloAvatar";
 import { EditPreferencesModal } from "@/components/EditPreferencesModal";
+import { LibraryLocator } from "@/components/LibraryLocator";
 import {
   Sparkles,
   ArrowRight,
@@ -373,58 +374,14 @@ export default function DescubrePage() {
         onSaved={loadData}
       />
 
-      {/* PUBLIC LIBRARY MODAL (Coste Cero, No Rebiun) */}
-      {showLibraryModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-2xl border border-indigo-100 relative animate-in fade-in zoom-in-95 duration-200">
-            <button
-              onClick={() => setShowLibraryModal(false)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 rounded-full hover:bg-slate-100"
-              aria-label="Cerrar modal"
-            >
-              <X size={18} />
-            </button>
-
-            <div className="text-center space-y-2 pt-1">
-              <div className="w-14 h-14 mx-auto rounded-2xl bg-[#ECEEFC] text-[#474AB6] flex items-center justify-center shadow-sm">
-                <Library size={28} />
-              </div>
-              <h3 className="text-base font-black text-[#26245C]">
-                Red de Bibliotecas Públicas
-              </h3>
-              <p className="text-xs text-slate-500">
-                Préstamo 100% gratuito de libros físicos en tu biblioteca municipal o escolar.
-              </p>
-            </div>
-
-            {modalBook && (
-              <div className="p-3 bg-[#F4F5FD] rounded-2xl border border-indigo-100/70 text-xs text-slate-700 space-y-1">
-                <div className="font-bold text-[#2A2B68]">{modalBook.title}</div>
-                <div className="text-[11px] text-slate-500 font-mono">ISBN: {modalBook.isbn}</div>
-              </div>
-            )}
-
-            <div className="space-y-2 pt-2">
-              <a
-                href="https://catalogo.ebiblio.es/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3 px-4 rounded-xl bg-[#4F46E5] hover:bg-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-sm"
-              >
-                <span>Consultar catálogo eBiblio España</span>
-                <ExternalLink size={14} />
-              </a>
-
-              <button
-                type="button"
-                onClick={() => setShowLibraryModal(false)}
-                className="w-full py-2.5 px-4 rounded-xl text-slate-600 hover:bg-slate-100 font-semibold text-xs transition-colors"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* LIBRARY LOCATOR MODAL (Sprint 0 Router & Counter Card) */}
+      {modalBook && (
+        <LibraryLocator
+          isOpen={showLibraryModal}
+          onClose={() => setShowLibraryModal(false)}
+          book={modalBook}
+          mascotName={mascotName}
+        />
       )}
     </div>
   );

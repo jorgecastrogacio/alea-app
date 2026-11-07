@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useOnboardingStore } from "@/store/useOnboardingStore";
 import { BrilloAvatar } from "@/components/BrilloAvatar";
+import { sanitizeNickname } from "@/lib/security/sanitizer";
 import {
   ArrowLeft,
   Check,
   Sparkles,
   ArrowRight,
   Shield,
+  AlertCircle,
 } from "lucide-react";
 
 export default function OnboardingPage() {
@@ -17,6 +19,8 @@ export default function OnboardingPage() {
   const [mounted, setMounted] = useState(false);
   const [favoriteBooks, setFavoriteBooks] = useState<string[]>([]);
   const [noKnownBooks, setNoKnownBooks] = useState(false);
+  const [mascotError, setMascotError] = useState<string | null>(null);
+  const [nicknameError, setNicknameError] = useState<string | null>(null);
 
   const {
     currentStep,
@@ -40,14 +44,12 @@ export default function OnboardingPage() {
     formats,
     toggleFormat,
     saveToStorage,
+    skipAsGuest,
   } = useOnboardingStore();
 
   useEffect(() => {
     setMounted(true);
-    if (!nickname) {
-      setNickname("Daniela");
-    }
-  }, [nickname, setNickname]);
+  }, []);
 
   if (!mounted) {
     return (
@@ -109,7 +111,7 @@ export default function OnboardingPage() {
     },
   ];
 
-  // PANTALLA 7: ¿Qué tipo de libros te llaman más la atención? (Máx 3, con exclusión quirúrgica)
+  // PANTALLA 7: Formato con exclusión
   const formatOptions = [
     { id: "Libros con muchas ilustraciones", label: "Libros con muchas ilustraciones", icon: "🌳" },
     { id: "Cómics y novelas gráficas", label: "Cómics y novelas gráficas", icon: "🎨" },
@@ -120,12 +122,12 @@ export default function OnboardingPage() {
 
   // PANTALLA 8: Libros conocidos
   const knownBooks = [
-    { id: "harry_potter", title: "Harry Potter", cover: "/assets/books/harry_potter.jpg" },
-    { id: "matilda", title: "Matilda", cover: "/assets/books/matilda.jpg" },
-    { id: "el_principito", title: "El Principito", cover: "/assets/books/el_principito.jpg" },
-    { id: "wonder", title: "Wonder", cover: "/assets/books/wonder.jpg" },
-    { id: "tintin", title: "Las aventuras de Tintín", cover: "/assets/books/tintin.jpg" },
-    { id: "greg", title: "El diario de Greg", cover: "/assets/books/greg.jpg" },
+    { id: "alea-harry-potter", title: "Harry Potter", cover: "/assets/books/harry_potter.jpg" },
+    { id: "alea-matilda", title: "Matilda", cover: "/assets/books/matilda.jpg" },
+    { id: "alea-principito", title: "El Principito", cover: "/assets/books/el_principito.jpg" },
+    { id: "alea-wonder", title: "Wonder", cover: "/assets/books/wonder.jpg" },
+    { id: "alea-tintin", title: "Las aventuras de Tintín", cover: "/assets/books/tintin.jpg" },
+    { id: "alea-greg", title: "El diario de Greg", cover: "/assets/books/greg.jpg" },
   ];
 
   const toggleFavoriteBook = (bookId: string) => {
@@ -137,21 +139,52 @@ export default function OnboardingPage() {
     }
   };
 
+  const handleNextStep = () => {
+    if (currentStep === 1) {
+      const result = sanitizeNickname(mascotName || "Chispa");
+      if (!result.isValid) {
+        setMascotError(result.error || "Nombre no válido");
+        return;
+      }
+      setMascotError(null);
+      setMascotName(result.sanitized);
+    }
+
+    if (currentStep === 2) {
+      const chosenName = nickname.trim() || "Lectora";
+      const result = sanitizeNickname(chosenName);
+      if (!result.isValid) {
+        setNicknameError(result.error || "Apodo no válido");
+        return;
+      }
+      setNicknameError(null);
+      setNickname(result.sanitized);
+    }
+
+    nextStep();
+  };
+
   const handleFinish = () => {
     saveToStorage();
     router.push("/descubre");
   };
 
+  const handleSkip = () => {
+    skipAsGuest();
+    router.push("/descubre");
+  };
+
   const totalSteps = 9;
-  const currentMascotName = mascotName || "Brillo";
+  const currentMascotName = mascotName || "Chispa";
+  const currentReaderName = nickname || "Lectora";
 
   return (
     <div className="flex-1 flex flex-col justify-between p-4 sm:p-6 min-h-screen bg-gradient-to-b from-[#E7E9FB] via-[#F4F4FD] to-[#EAE9F8] relative overflow-hidden select-none">
       
-      {/* Enchanted background glow */}
+      {/* Background glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-200/40 rounded-full blur-3xl pointer-events-none" />
 
-      {/* TOP HEADER: Back button, step progress dots */}
+      {/* TOP HEADER */}
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-3">
           {currentStep > 1 ? (
@@ -187,18 +220,11 @@ export default function OnboardingPage() {
             </div>
           </div>
 
+          {/* Clean Guest Mode on Skip (Sprint 1) */}
           <button
-            onClick={() => {
-              if (worlds.length === 0) {
-                toggleWorld("Bosques encantados");
-                toggleWorld("Castillos y secretos");
-                toggleWorld("Planetas y galaxias");
-              }
-              if (formats.length === 0) toggleFormat("Me da igual el formato si la historia es buena");
-              if (!rhythm) setRhythm("¡Que pasen cosas!");
-              setStep(9);
-            }}
-            className="text-xs font-bold text-slate-400 hover:text-[#4F46E5] px-2 py-1"
+            onClick={handleSkip}
+            className="text-xs font-bold text-slate-500 hover:text-[#4F46E5] px-2.5 py-1.5 rounded-full hover:bg-white/80 transition-all"
+            title="Entrar en Modo Explorador sin registrar datos"
           >
             Saltar
           </button>
@@ -208,7 +234,7 @@ export default function OnboardingPage() {
       {/* WIZARD CONTENT CONTAINER */}
       <div className="flex-1 flex flex-col justify-center py-2 relative z-10">
 
-        {/* PASO 1: Presentación de la Mascota y su nombre (HITO 2, Bug #3 y #11) */}
+        {/* PASO 1: Presentación de la Mascota */}
         {currentStep === 1 && (
           <div className="space-y-5 text-center">
             <BrilloAvatar size="xl" expression="happy" name={currentMascotName} />
@@ -230,13 +256,26 @@ export default function OnboardingPage() {
                 id="mascotName"
                 type="text"
                 value={mascotName}
-                onChange={(e) => setMascotName(e.target.value)}
-                placeholder="Brillo"
-                maxLength={20}
-                className="w-full px-4 py-3 bg-[#F4F5FD] border border-indigo-100 rounded-2xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                onChange={(e) => {
+                  setMascotName(e.target.value);
+                  setMascotError(null);
+                }}
+                placeholder="Chispa"
+                maxLength={16}
+                className={`w-full px-4 py-3 bg-[#F4F5FD] border rounded-2xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 ${
+                  mascotError
+                    ? "border-rose-400 focus:ring-rose-400 bg-rose-50/40"
+                    : "border-indigo-100 focus:ring-indigo-400"
+                }`}
               />
+              {mascotError && (
+                <p className="text-xs text-rose-600 flex items-center gap-1 font-medium">
+                  <AlertCircle size={14} className="shrink-0" />
+                  <span>{mascotError}</span>
+                </p>
+              )}
               <p className="text-[11px] text-slate-500">
-                Escribe &quot;Brillo&quot;, &quot;Chispa&quot;, &quot;Lumi&quot;, o lo que tú quieras.
+                Escribe &quot;Chispa&quot;, &quot;Brillo&quot;, &quot;Lumi&quot;, o lo que prefieras (2-16 letras).
               </p>
             </div>
           </div>
@@ -249,10 +288,10 @@ export default function OnboardingPage() {
 
             <div>
               <h1 className="text-2xl font-black text-[#26245C] tracking-tight">
-                ¿Cómo te gustaría que te llamemos a ti?
+                ¿Cómo te gustaría que te llamemos?
               </h1>
               <p className="text-xs text-slate-600 mt-1 max-w-xs mx-auto">
-                Para que {currentMascotName} se dirija a ti como en casa.
+                Para que {currentMascotName} te hable de forma cercana.
               </p>
             </div>
 
@@ -261,11 +300,24 @@ export default function OnboardingPage() {
                 id="nickname"
                 type="text"
                 value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                placeholder="Ej. Daniela, Lucas..."
-                maxLength={20}
-                className="w-full px-4 py-2.5 bg-[#F4F5FD] border border-indigo-100 rounded-2xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                onChange={(e) => {
+                  setNickname(e.target.value);
+                  setNicknameError(null);
+                }}
+                placeholder="Tu nombre o apodo..."
+                maxLength={16}
+                className={`w-full px-4 py-2.5 bg-[#F4F5FD] border rounded-2xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 ${
+                  nicknameError
+                    ? "border-rose-400 focus:ring-rose-400 bg-rose-50/40"
+                    : "border-indigo-100 focus:ring-indigo-400"
+                }`}
               />
+              {nicknameError && (
+                <p className="text-xs text-rose-600 flex items-center gap-1 font-medium">
+                  <AlertCircle size={14} className="shrink-0" />
+                  <span>{nicknameError}</span>
+                </p>
+              )}
 
               <div className="pt-1">
                 <span className="text-xs font-bold text-[#30337E] block mb-2">
@@ -291,13 +343,13 @@ export default function OnboardingPage() {
 
               <p className="text-[10px] text-slate-500 flex items-center gap-1 pt-1">
                 <Shield size={12} className="text-emerald-600 shrink-0" />
-                100% Privado: no te pedimos correos ni datos personales.
+                100% Privado: no te pedimos correos ni contraseñas.
               </p>
             </div>
           </div>
         )}
 
-        {/* PASO 3: Tus Mundos (HITO 1, Bug #2) */}
+        {/* PASO 3: Tus Mundos */}
         {currentStep === 3 && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
@@ -313,7 +365,6 @@ export default function OnboardingPage() {
               <BrilloAvatar size="sm" expression="curious" name={currentMascotName} />
             </div>
 
-            {/* 6 Official Worlds */}
             <div className="grid grid-cols-2 gap-2.5 max-h-[46vh] overflow-y-auto no-scrollbar pt-1">
               {officialWorlds.map((item) => {
                 const isSelected = worlds.includes(item.id);
@@ -360,7 +411,7 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* PASO 4: ¿Qué te gustaría encontrar en una historia? (Máx 3) */}
+        {/* PASO 4: Intereses de historia */}
         {currentStep === 4 && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
@@ -417,7 +468,7 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* PASO 5: ¿Qué protagonistas te gustan? (Máx 3) */}
+        {/* PASO 5: Protagonistas */}
         {currentStep === 5 && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
@@ -474,7 +525,7 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* PASO 6: ¿Cómo te gustan las historias? (Selección Única) */}
+        {/* PASO 6: Ritmo */}
         {currentStep === 6 && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
@@ -535,7 +586,7 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* PASO 7: Formato con Exclusión Quirúrgica (HITO 1, Bug #1) */}
+        {/* PASO 7: Formato con exclusión */}
         {currentStep === 7 && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
@@ -680,12 +731,12 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* PASO 9: ¡Tu universo está preparado! (Con mundos REALES) */}
+        {/* PASO 9: Resumen del Universo */}
         {currentStep === 9 && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
               <h1 className="text-2xl font-black text-[#26245C] tracking-tight">
-                ¡Tu universo está preparado, {nickname}!
+                ¡Tu universo está preparado, {currentReaderName}!
               </h1>
               <p className="text-xs text-slate-600 max-w-xs mx-auto">
                 Con {currentMascotName} hemos preparado lecturas hechas a tu medida.
@@ -696,7 +747,6 @@ export default function OnboardingPage() {
               <BrilloAvatar size="lg" expression="celebrating" name={currentMascotName} />
             </div>
 
-            {/* Tus mundos reales elegidos */}
             <div className="space-y-2">
               <span className="text-xs font-bold text-[#30337E] block text-center">
                 Tus mundos elegidos:
@@ -717,10 +767,9 @@ export default function OnboardingPage() {
               </div>
             </div>
 
-            {/* Te recomiendo */}
             <div className="space-y-2 pt-1">
               <span className="text-xs font-bold text-[#30337E] block text-center">
-                Primeras lecturas para ti:
+                Primeras lecturas recomendadas:
               </span>
               <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto">
                 <div className="alea-card p-2 flex flex-col items-center text-center">
@@ -752,7 +801,7 @@ export default function OnboardingPage() {
         {currentStep < 9 ? (
           <button
             type="button"
-            onClick={nextStep}
+            onClick={handleNextStep}
             className="w-full py-3.5 px-6 rounded-full font-black text-sm bg-[#5457D0] hover:bg-[#4346B8] active:scale-[0.98] text-white shadow-magical flex items-center justify-center gap-2 transition-all"
           >
             <span>

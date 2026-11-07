@@ -1,32 +1,17 @@
-import mockBooks from "@/data/books.mock.json";
+import verifiedBooks from "@/data/books.verified.json";
+import { Book } from "@/types/book";
 
-export interface Book {
-  id: string;
-  isbn: string;
-  title: string;
-  author: string;
-  coverUrl: string;
-  audienceAge: string;
-  tags: string[];
-  synopsis: string;
-  pages?: number;
-  editorial?: string;
-  language?: string;
-  difficulty?: string;
-  edition?: string;
-  color?: string;
-}
+export type { Book };
 
 /**
- * Obtiene el catálogo completo de libros desde la fuente estática local (Coste 0€).
+ * Obtiene el catálogo completo de libros desde el JSON verificado oficial (Coste 0€).
  */
 export async function getBooks(): Promise<Book[]> {
-  // Simulamos una respuesta asíncrona estándar para permitir futura migración transparente
-  return mockBooks as Book[];
+  return verifiedBooks as Book[];
 }
 
 /**
- * Obtiene un libro específico por su identificador.
+ * Obtiene un libro específico por su identificador único.
  */
 export async function getBookById(id: string): Promise<Book | undefined> {
   const books = await getBooks();
@@ -34,60 +19,53 @@ export async function getBookById(id: string): Promise<Book | undefined> {
 }
 
 /**
- * MOTOR GRATUITO HEADLESS CMS CON GOOGLE SHEETS (COSTE CERO / ESCALABILIDAD):
- * 
- * Esta función permite al cliente gestionar su catálogo en una hoja de Google Sheets
- * sin pagar base de datos ni CMS externo.
- * 
- * INSTRUCCIONES PARA EL CLIENTE:
- * 1. Crea una hoja de Google Sheets con las columnas:
- *    id, isbn, title, author, coverUrl, audienceAge, tags (separados por coma), synopsis, pages, editorial
- * 2. En Google Sheets ve a: Archivo > Compartir > Publicar en la web.
- * 3. Selecciona formato: "Valores separados por comas (.csv)" y pulsa Publicar.
- * 4. Copia el ID de la hoja de cálculo (el código alfanumérico en la URL).
- * 5. Descomenta la función y úsala en lugar de getBooks().
+ * MOTOR GRATUITO HEADLESS CMS CON GOOGLE SHEETS (COSTE CERO):
+ * Permite sincronizar libros editables por el cliente en Google Sheets publicado como CSV.
  */
 export async function getBooksFromGoogleSheets(sheetId: string): Promise<Book[]> {
-  /*
   try {
     const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
-    const response = await fetch(csvUrl, { next: { revalidate: 3600 } }); // Caché gratuita de 1 hora
+    const response = await fetch(csvUrl, { next: { revalidate: 3600 } });
     if (!response.ok) throw new Error("Error al consultar Google Sheets");
 
     const text = await response.text();
     const rows = text.split("\n").filter((r) => r.trim() !== "");
     const headers = rows[0].split(",").map((h) => h.trim());
 
-    const books: Book[] = rows.slice(1).map((row) => {
-      // Parseador simple de CSV respetando comillas
-      const values = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
-      const cleanValues = values.map((v) => v.replace(/^"|"$/g, "").trim());
-      
-      const item: any = {};
-      headers.forEach((h, index) => {
-        item[h] = cleanValues[index] || "";
+    return rows.slice(1).map((row) => {
+      const values = row.split(",").map((v) => v.trim());
+      const record: Record<string, string> = {};
+      headers.forEach((h, i) => {
+        record[h] = values[i] || "";
       });
 
       return {
-        id: item.id || `alea-${Math.random().toString(36).substring(2, 7)}`,
-        isbn: item.isbn,
-        title: item.title,
-        author: item.author,
-        coverUrl: item.coverUrl || "https://covers.openlibrary.org/b/isbn/" + item.isbn + "-L.jpg",
-        audienceAge: item.audienceAge || "8-12",
-        tags: item.tags ? item.tags.split(";").map((t: string) => t.trim()) : [],
-        synopsis: item.synopsis || "",
-        pages: item.pages ? parseInt(item.pages, 10) : undefined,
-        editorial: item.editorial || "",
-        color: item.color || "#2563eb",
+        id: record.id || `alea-${Math.random().toString(36).substring(7)}`,
+        isbn: record.isbn || "9788420482811",
+        title: record.title || "Sin título",
+        author: record.author || "Autor Desconocido",
+        editorial: record.editorial || "Editorial Independiente",
+        edition: record.edition || "1ª Edición",
+        year: parseInt(record.year, 10) || 2023,
+        pages: parseInt(record.pages, 10) || 200,
+        language: (record.language as Book["language"]) || "Castellano",
+        audienceAge: record.audienceAge || "8-12",
+        targetAge: {
+          min: parseInt(record.ageMin, 10) || 8,
+          max: parseInt(record.ageMax, 10) || 12,
+          recommended: parseInt(record.ageRecommended, 10) || 10,
+        },
+        difficulty: (record.difficulty as Book["difficulty"]) || "Media",
+        coverUrl: record.coverUrl || "/assets/books/matilda.jpg",
+        coverWebp: record.coverWebp || `/assets/books/${record.id}.webp`,
+        color: record.color || "#4f46e5",
+        tags: record.tags ? record.tags.split(";").map((t) => t.trim()) : ["Aventura"],
+        synopsis: record.synopsis || "Una historia fascinante por descubrir.",
+        verifiedSource: "MANUAL_CURATED" as const,
       };
     });
-
-    return books;
   } catch (error) {
-    console.error("Fallo al conectar con Google Sheets, usando mock local como fallback:", error);
-    return mockBooks as Book[];
+    console.warn("Fallo al conectar con Google Sheets, usando catálogo verificado local:", error);
+    return getBooks();
   }
-  */
-  return mockBooks as Book[];
 }

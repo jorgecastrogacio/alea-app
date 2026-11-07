@@ -10,6 +10,7 @@ export interface UserProfile {
   rhythm: string;
   formats: string[];
   readingHabit: string;
+  isGuest?: boolean;
   completedAt?: string;
 }
 
@@ -27,6 +28,7 @@ interface OnboardingState extends UserProfile {
   setRhythm: (rhythm: string) => void;
   toggleFormat: (format: string) => void;
   setReadingHabit: (habit: string) => void;
+  skipAsGuest: () => void;
   updatePreferences: (partial: Partial<UserProfile>) => void;
   resetOnboarding: () => void;
   loadFromStorage: () => boolean;
@@ -41,25 +43,25 @@ const isAnyFormatOption = (fmt: string) => {
 
 export const useOnboardingStore = create<OnboardingState>((set, get) => ({
   currentStep: 1,
-  nickname: "Daniela",
-  mascotName: "Brillo",
-  age: "11",
-  worlds: ["Bosques encantados", "Castillos y secretos"],
-  interests: ["Vivir una gran aventura", "Resolver un misterio"],
-  protagonists: ["Niños y niñas como yo"],
-  rhythm: "¡Que pasen cosas!",
-  formats: ["Me da igual el formato si la historia es buena"],
+  nickname: "",
+  mascotName: "Chispa",
+  age: "10",
+  worlds: [],
+  interests: [],
+  protagonists: [],
+  rhythm: "",
+  formats: [],
   readingHabit: "Lector habitual",
+  isGuest: false,
 
   setStep: (step) => set({ currentStep: step }),
   nextStep: () => set((state) => ({ currentStep: Math.min(state.currentStep + 1, 9) })),
   prevStep: () => set((state) => ({ currentStep: Math.max(state.currentStep - 1, 1) })),
 
   setNickname: (nickname) => set({ nickname }),
-  setMascotName: (mascotName) => set({ mascotName: mascotName.trim() || "Brillo" }),
+  setMascotName: (mascotName) => set({ mascotName: mascotName.trim() || "Chispa" }),
   setAge: (age) => set({ age }),
 
-  // HITO 1: Mundos (Máximo 3 opciones)
   toggleWorld: (world) => {
     const { worlds } = get();
     if (worlds.includes(world)) {
@@ -71,7 +73,6 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
     }
   },
 
-  // Qué encontrar (Máximo 3 opciones)
   toggleInterest: (interest) => {
     const { interests } = get();
     if (interests.includes(interest)) {
@@ -83,7 +84,6 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
     }
   },
 
-  // Protagonistas (Máximo 3 opciones)
   toggleProtagonist: (protagonist) => {
     const { protagonists } = get();
     if (protagonists.includes(protagonist)) {
@@ -95,79 +95,113 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
     }
   },
 
-  // Ritmo (Selección Única obligatoria)
   setRhythm: (rhythm) => set({ rhythm }),
 
-  // HITO 1: Formato con REGLA EXCLUYENTE ESTRICTA (Bug #1)
-  // Al hacer clic en "Me da igual el formato", las otras opciones pasan forzosamente a false (desmarcadas).
-  // Y si se selecciona otra opción específica, "Me da igual el formato" se retira de inmediato.
   toggleFormat: (format) => {
     const { formats } = get();
+    const isTargetAny = isAnyFormatOption(format);
 
-    if (isAnyFormatOption(format)) {
+    if (isTargetAny) {
       if (formats.some(isAnyFormatOption)) {
         set({ formats: [] });
       } else {
-        // Se queda FORZOSAMENTE ÚNICO
         set({ formats: [format] });
       }
       return;
     }
 
-    // Si se pulsa cualquier formato específico, se purga cualquier "Me da igual..."
-    const cleaned = formats.filter((f) => !isAnyFormatOption(f));
-
-    if (cleaned.includes(format)) {
-      set({ formats: cleaned.filter((f) => f !== format) });
+    const withoutAny = formats.filter((f) => !isAnyFormatOption(f));
+    if (withoutAny.includes(format)) {
+      set({ formats: withoutAny.filter((f) => f !== format) });
     } else {
-      if (cleaned.length < 3) {
-        set({ formats: [...cleaned, format] });
+      if (withoutAny.length < 3) {
+        set({ formats: [...withoutAny, format] });
       }
     }
   },
 
-  setReadingHabit: (readingHabit) => set({ readingHabit }),
+  setReadingHabit: (habit) => set({ readingHabit: habit }),
 
-  // HITO 6: Edición directa de intereses sin reiniciar onboarding (Bug #10)
-  updatePreferences: (partial) => {
-    set((state) => {
-      const updated = { ...state, ...partial };
-      if (typeof window !== "undefined") {
-        try {
-          const profile: UserProfile = {
-            nickname: updated.nickname || "Daniela",
-            mascotName: updated.mascotName || "Brillo",
-            age: updated.age || "11",
-            worlds: updated.worlds || [],
-            interests: updated.interests || [],
-            protagonists: updated.protagonists || [],
-            rhythm: updated.rhythm || "¡Que pasen cosas!",
-            formats: updated.formats || [],
-            readingHabit: updated.readingHabit || "",
-            completedAt: updated.completedAt || new Date().toISOString(),
-          };
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
-        } catch (e) {
-          console.error("Error updating profile in localStorage:", e);
-        }
-      }
-      return partial;
+  skipAsGuest: () => {
+    const guestProfile: Partial<UserProfile> = {
+      nickname: "Explorador",
+      mascotName: get().mascotName || "Chispa",
+      age: get().age || "10",
+      worlds: [],
+      interests: [],
+      protagonists: [],
+      rhythm: "Depende de la historia.",
+      formats: ["Me da igual el formato si la historia es buena"],
+      readingHabit: "Descubriendo",
+      isGuest: true,
+      completedAt: new Date().toISOString(),
+    };
+
+    set({
+      ...guestProfile,
+      currentStep: 9,
     });
+
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(guestProfile));
+      } catch (e) {
+        console.error("Error saving guest profile:", e);
+      }
+    }
+  },
+
+  updatePreferences: (partial) => {
+    const updated = {
+      ...get(),
+      ...partial,
+      isGuest: false,
+    };
+    set(updated);
+    if (typeof window !== "undefined") {
+      try {
+        const toSave: UserProfile = {
+          nickname: updated.nickname || "Lector",
+          mascotName: updated.mascotName || "Chispa",
+          age: updated.age || "10",
+          worlds: updated.worlds || [],
+          interests: updated.interests || [],
+          protagonists: updated.protagonists || [],
+          rhythm: updated.rhythm || "Depende de la historia.",
+          formats: updated.formats || [],
+          readingHabit: updated.readingHabit || "Lector",
+          isGuest: false,
+          completedAt: new Date().toISOString(),
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+      } catch (e) {
+        console.error("Error updating preferences in localStorage:", e);
+      }
+    }
   },
 
   resetOnboarding: () => {
-    set({
+    const initialState = {
       currentStep: 1,
       nickname: "",
-      mascotName: "Brillo",
-      age: "11",
+      mascotName: "Chispa",
+      age: "10",
       worlds: [],
       interests: [],
       protagonists: [],
       rhythm: "",
       formats: [],
-      readingHabit: "",
-    });
+      readingHabit: "Lector habitual",
+      isGuest: false,
+    };
+    set(initialState);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {
+        console.error("Error clearing profile from localStorage:", e);
+      }
+    }
   },
 
   loadFromStorage: () => {
@@ -175,45 +209,47 @@ export const useOnboardingStore = create<OnboardingState>((set, get) => ({
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved);
+        const parsed: UserProfile = JSON.parse(saved);
         set({
-          nickname: parsed.nickname || "Daniela",
-          mascotName: parsed.mascotName || "Brillo",
-          age: parsed.age || "11",
-          worlds: parsed.worlds || ["Bosques encantados", "Castillos y secretos"],
-          interests: parsed.interests || ["Vivir una gran aventura"],
-          protagonists: parsed.protagonists || ["Niños y niñas como yo"],
-          rhythm: parsed.rhythm || "¡Que pasen cosas!",
-          formats: parsed.formats || ["Me da igual el formato si la historia es buena"],
-          readingHabit: parsed.readingHabit || "",
+          nickname: parsed.nickname || "",
+          mascotName: parsed.mascotName || "Chispa",
+          age: parsed.age || "10",
+          worlds: parsed.worlds || [],
+          interests: parsed.interests || [],
+          protagonists: parsed.protagonists || [],
+          rhythm: parsed.rhythm || "",
+          formats: parsed.formats || [],
+          readingHabit: parsed.readingHabit || "Lector habitual",
+          isGuest: !!parsed.isGuest,
         });
         return true;
       }
     } catch (e) {
-      console.error("Error reading localStorage:", e);
+      console.error("Error reading profile from localStorage:", e);
     }
     return false;
   },
 
   saveToStorage: () => {
     if (typeof window === "undefined") return;
-    const { nickname, mascotName, age, worlds, interests, protagonists, rhythm, formats, readingHabit } = get();
-    const profile: UserProfile = {
-      nickname: nickname.trim() || "Daniela",
-      mascotName: mascotName?.trim() || "Brillo",
-      age,
-      worlds,
-      interests,
-      protagonists,
-      rhythm,
-      formats,
-      readingHabit,
-      completedAt: new Date().toISOString(),
-    };
     try {
+      const state = get();
+      const profile: UserProfile = {
+        nickname: state.nickname || "Lector",
+        mascotName: state.mascotName || "Chispa",
+        age: state.age || "10",
+        worlds: state.worlds,
+        interests: state.interests,
+        protagonists: state.protagonists,
+        rhythm: state.rhythm,
+        formats: state.formats,
+        readingHabit: state.readingHabit,
+        isGuest: !!state.isGuest,
+        completedAt: new Date().toISOString(),
+      };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
     } catch (e) {
-      console.error("Error saving to localStorage:", e);
+      console.error("Error writing profile to localStorage:", e);
     }
   },
 }));
