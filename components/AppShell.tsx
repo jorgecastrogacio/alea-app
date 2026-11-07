@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useOnboardingStore } from "@/store/useOnboardingStore";
 import {
   Home,
   Compass,
@@ -23,6 +24,26 @@ interface AppShellProps {
 export default function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
   const isOnboarding = pathname?.startsWith("/onboarding");
+  const store = useOnboardingStore();
+  const [userName, setUserName] = useState<string>("Lector");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("alea_user_profile");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.nickname) {
+          setUserName(parsed.nickname);
+          return;
+        }
+      }
+      if (store.nickname) {
+        setUserName(store.nickname);
+      }
+    } catch {
+      // fallback
+    }
+  }, [store.nickname]);
 
   if (isOnboarding) {
     return (
@@ -93,7 +114,7 @@ export default function AppShell({ children }: AppShellProps) {
             <div className="w-11 h-11 rounded-full overflow-hidden border-2 border-indigo-200 shadow-sm mb-1 group-hover:scale-105 transition-transform">
               <img
                 src="/assets/avatar_daniela.jpg"
-                alt="Avatar Daniela"
+                alt={`Avatar de ${userName}`}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   (e.target as HTMLElement).style.display = "none";
@@ -101,7 +122,7 @@ export default function AppShell({ children }: AppShellProps) {
               />
             </div>
             <div className="flex items-center gap-1 text-xs font-bold text-[#30337E]">
-              <span>Daniela</span>
+              <span>{userName}</span>
               <ChevronDown size={14} className="text-slate-400" />
             </div>
           </Link>

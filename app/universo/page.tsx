@@ -96,12 +96,12 @@ export default function UniversoPage() {
     );
   }
 
-  const nickname = profile?.nickname || store.nickname || "Daniela";
-  const mascotName = profile?.mascotName || store.mascotName || "Brillo";
-  const age = profile?.age || store.age || "11";
+  const nickname = profile?.nickname || store.nickname || "Lector";
+  const mascotName = profile?.mascotName || store.mascotName || "Chispa";
+  const age = profile?.age || store.age || "10";
   const worlds = (profile?.worlds && profile.worlds.length > 0)
     ? profile.worlds
-    : store.worlds;
+    : (store.worlds || []);
   const interests = profile?.interests || store.interests;
   const rhythm = profile?.rhythm || store.rhythm;
   const formats = profile?.formats || store.formats;
@@ -232,15 +232,21 @@ export default function UniversoPage() {
             Mundos Favoritos:
           </span>
           <div className="flex flex-wrap gap-2">
-            {worlds.map((w) => (
-              <span
-                key={w}
-                className="px-3 py-1.5 bg-[#ECEEFC] text-[#2A2B68] rounded-xl text-xs font-bold flex items-center gap-1.5 border border-indigo-100"
-              >
-                <span>{WORLD_ICONS[w] || "✨"}</span>
-                <span>{w}</span>
+            {worlds && worlds.length > 0 ? (
+              worlds.map((w) => (
+                <span
+                  key={w}
+                  className="px-3 py-1.5 bg-[#ECEEFC] text-[#2A2B68] rounded-xl text-xs font-bold flex items-center gap-1.5 border border-indigo-100"
+                >
+                  <span>{WORLD_ICONS[w] || "✨"}</span>
+                  <span>{w}</span>
+                </span>
+              ))
+            ) : (
+              <span className="text-xs text-slate-500 italic py-1">
+                Exploración libre (sin mundos preferidos fijados)
               </span>
-            ))}
+            )}
           </div>
         </div>
 

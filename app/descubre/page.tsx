@@ -94,7 +94,7 @@ export default function DescubrePage() {
     const currentWorlds = profile?.worlds || store.worlds;
     const updated = currentWorlds.filter((w) => w !== worldName);
     store.updatePreferences({
-      worlds: updated.length > 0 ? updated : ["Bosques encantados"],
+      worlds: updated,
     });
     loadData();
   };
@@ -119,11 +119,11 @@ export default function DescubrePage() {
     );
   }
 
-  const readerName = profile?.nickname || store.nickname || "Daniela";
-  const mascotName = profile?.mascotName || store.mascotName || "Brillo";
+  const readerName = profile?.nickname || store.nickname || "Lector";
+  const mascotName = profile?.mascotName || store.mascotName || "Chispa";
   const activeWorlds = (profile?.worlds && profile.worlds.length > 0)
     ? profile.worlds
-    : (store.worlds.length > 0 ? store.worlds : ["Bosques encantados", "Castillos y secretos"]);
+    : (store.worlds.length > 0 ? store.worlds : []);
 
   return (
     <div className="flex-1 flex flex-col p-4 md:p-7 space-y-6">

@@ -267,8 +267,14 @@ export default function OnboardingPage() {
                 type="text"
                 value={mascotName}
                 onChange={(e) => {
-                  setMascotName(e.target.value);
-                  setMascotError(null);
+                  const val = e.target.value;
+                  setMascotName(val);
+                  if (val.trim().length >= 2) {
+                    const res = sanitizeNickname(val);
+                    setMascotError(!res.isValid ? (res.error || "Nombre no válido") : null);
+                  } else {
+                    setMascotError(null);
+                  }
                 }}
                 placeholder="Chispa"
                 maxLength={16}
@@ -311,8 +317,14 @@ export default function OnboardingPage() {
                 type="text"
                 value={nickname}
                 onChange={(e) => {
-                  setNickname(e.target.value);
-                  setNicknameError(null);
+                  const val = e.target.value;
+                  setNickname(val);
+                  if (val.trim().length >= 2) {
+                    const res = sanitizeNickname(val);
+                    setNicknameError(!res.isValid ? (res.error || "Apodo no válido") : null);
+                  } else {
+                    setNicknameError(null);
+                  }
                 }}
                 placeholder="Tu nombre o apodo..."
                 maxLength={16}
@@ -759,21 +771,30 @@ export default function OnboardingPage() {
 
             <div className="space-y-2">
               <span className="text-xs font-bold text-[#30337E] block text-center">
-                Tus mundos elegidos:
+                {worlds.length > 0 ? "Tus mundos elegidos:" : "Modo de exploración:"}
               </span>
               <div className="flex items-center justify-center gap-2 flex-wrap">
-                {(worlds.length > 0 ? worlds : ["Bosques encantados", "Castillos y secretos"]).map((worldTitle) => {
-                  const found = officialWorlds.find((w) => w.id === worldTitle);
-                  return (
-                    <div
-                      key={worldTitle}
-                      className="alea-card py-2 px-3 rounded-2xl flex items-center gap-2 border border-indigo-100 bg-white shadow-sm"
-                    >
-                      <span className="text-xl">{found?.icon || "✨"}</span>
-                      <span className="text-xs font-black text-[#202154]">{worldTitle}</span>
-                    </div>
-                  );
-                })}
+                {worlds.length > 0 ? (
+                  worlds.map((worldTitle) => {
+                    const found = officialWorlds.find((w) => w.id === worldTitle);
+                    return (
+                      <div
+                        key={worldTitle}
+                        className="alea-card py-2 px-3 rounded-2xl flex items-center gap-2 border border-indigo-100 bg-white shadow-sm"
+                      >
+                        <span className="text-xl">{found?.icon || "✨"}</span>
+                        <span className="text-xs font-black text-[#202154]">{worldTitle}</span>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="alea-card py-2 px-3.5 rounded-2xl flex items-center gap-2 border border-indigo-100 bg-white shadow-sm">
+                    <span className="text-xl">🌍</span>
+                    <span className="text-xs font-bold text-[#202154]">
+                      Explorador todoterreno (descubrimiento libre de historias)
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 

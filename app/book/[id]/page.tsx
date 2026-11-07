@@ -69,8 +69,31 @@ export default function BookDetailPage({ params }: PageProps) {
   } = useLibraryStore();
 
   const userProfile = useOnboardingStore();
-  const mascotName = userProfile.mascotName || "Brillo";
-  const readerName = userProfile.nickname || "Lector";
+  const [activeProfile, setActiveProfile] = useState<{ nickname: string; mascotName: string }>({
+    nickname: userProfile.nickname || "Lector",
+    mascotName: userProfile.mascotName || "Chispa",
+  });
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("alea_user_profile");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setActiveProfile({
+          nickname: parsed.nickname || userProfile.nickname || "Lector",
+          mascotName: parsed.mascotName || userProfile.mascotName || "Chispa",
+        });
+        return;
+      }
+    } catch {}
+    setActiveProfile({
+      nickname: userProfile.nickname || "Lector",
+      mascotName: userProfile.mascotName || "Chispa",
+    });
+  }, [userProfile.nickname, userProfile.mascotName]);
+
+  const mascotName = activeProfile.mascotName;
+  const readerName = activeProfile.nickname;
 
   useEffect(() => {
     loadLibrary();

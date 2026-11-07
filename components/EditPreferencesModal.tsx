@@ -31,9 +31,29 @@ const STORY_INTERESTS = [
 
 export function EditPreferencesModal({ isOpen, onClose, onSaved }: EditPreferencesModalProps) {
   const store = useOnboardingStore();
-  const [localWorlds, setLocalWorlds] = useState<string[]>(store.worlds || []);
-  const [localInterests, setLocalInterests] = useState<string[]>(store.interests || []);
-  const [localMascotName, setLocalMascotName] = useState(store.mascotName || "Brillo");
+  const [localWorlds, setLocalWorlds] = useState<string[]>([]);
+  const [localInterests, setLocalInterests] = useState<string[]>([]);
+  const [localMascotName, setLocalMascotName] = useState("Chispa");
+
+  React.useEffect(() => {
+    if (isOpen) {
+      try {
+        const saved = localStorage.getItem("alea_user_profile");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setLocalWorlds(parsed.worlds || []);
+          setLocalInterests(parsed.interests || []);
+          setLocalMascotName(parsed.mascotName || store.mascotName || "Chispa");
+          return;
+        }
+      } catch (e) {
+        console.warn("Error leyendo preferencias para modal:", e);
+      }
+      setLocalWorlds(store.worlds || []);
+      setLocalInterests(store.interests || []);
+      setLocalMascotName(store.mascotName || "Chispa");
+    }
+  }, [isOpen, store.worlds, store.interests, store.mascotName]);
 
   if (!isOpen) return null;
 
@@ -59,9 +79,9 @@ export function EditPreferencesModal({ isOpen, onClose, onSaved }: EditPreferenc
 
   const handleSave = () => {
     store.updatePreferences({
-      worlds: localWorlds.length > 0 ? localWorlds : ["Bosques encantados"],
-      interests: localInterests.length > 0 ? localInterests : ["Vivir una gran aventura"],
-      mascotName: localMascotName.trim() || "Brillo",
+      worlds: localWorlds,
+      interests: localInterests,
+      mascotName: localMascotName.trim() || "Chispa",
     });
     if (onSaved) onSaved();
     onClose();
