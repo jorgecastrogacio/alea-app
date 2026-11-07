@@ -1,8 +1,28 @@
 import { z } from "zod";
 
+/**
+ * Valida matemáticamente el dígito de control oficial EAN-13 / ISBN-13
+ * de acuerdo con el estándar internacional ISO 2108.
+ */
+export function isValidISBN13(isbn: string): boolean {
+  const clean = isbn.replace(/[-\s]/g, "");
+  if (!/^97[89]\d{10}$/.test(clean)) return false;
+  let sum = 0;
+  for (let i = 0; i < 12; i++) {
+    sum += parseInt(clean[i], 10) * (i % 2 === 0 ? 1 : 3);
+  }
+  const checkDigit = (10 - (sum % 10)) % 10;
+  return checkDigit === parseInt(clean[12], 10);
+}
+
 export const BookSchema = z.object({
   id: z.string().regex(/^alea-[a-z0-9-]+$/),
-  isbn: z.string().regex(/^97[89]\d{10}$/, "ISBN-13 español inválido"),
+  isbn: z
+    .string()
+    .regex(/^97[89]\d{10}$/, "ISBN-13 debe comenzar con 978 o 979 y tener 13 dígitos")
+    .refine(isValidISBN13, {
+      message: "El dígito de control del ISBN-13 no coincide con el algoritmo matemático oficial EAN-13",
+    }),
   title: z.string().min(1).max(180),
   author: z.string().min(1).max(120),
   editorial: z.string().min(1).max(80),

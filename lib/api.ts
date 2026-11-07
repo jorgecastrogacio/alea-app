@@ -41,7 +41,7 @@ export async function getBooksFromGoogleSheets(sheetId: string): Promise<Book[]>
 
       return {
         id: record.id || `alea-${Math.random().toString(36).substring(7)}`,
-        isbn: record.isbn || "9788420482811",
+        isbn: record.isbn || "9788420471549",
         title: record.title || "Sin título",
         author: record.author || "Autor Desconocido",
         editorial: record.editorial || "Editorial Independiente",
